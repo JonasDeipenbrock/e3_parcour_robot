@@ -17,9 +17,25 @@ public class Base {
 	public static EV3TouchSensor rightTouch = new EV3TouchSensor(SensorPort.S2);
 
 	public static void main(String[] args) {
+		
+		float[] sensorDataLeft = new float[1];
+		float[] sensorDataRight = new float[2];
+		Movement move = new Movement(left, right);
+		
 				
 		while (Button.ESCAPE.isUp()) {
-			runLoop();
+			leftTouch.getTouchMode().fetchSample(sensorDataLeft, 0);
+			rightTouch.getTouchMode().fetchSample(sensorDataRight, 0);
+			
+			if(sensorDataLeft[0] == 1.0 && sensorDataRight[0] == 1.0) {
+				move.forward();
+			} else if (sensorDataLeft[0] == 1.0) {
+				move.left();
+			} else if (sensorDataRight[0] == 1.0) {
+				move.right();
+			} else {
+				move.stop();
+			}
 		}
 	}
 	
