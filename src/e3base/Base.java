@@ -1,5 +1,7 @@
 package e3base;
 
+import java.util.Arrays;
+
 import lejos.hardware.Button;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.hardware.motor.EV3MediumRegulatedMotor;
@@ -8,6 +10,8 @@ import lejos.hardware.sensor.EV3IRSensor;
 import lejos.hardware.sensor.EV3TouchSensor;
 import lejos.robotics.navigation.DifferentialPilot;
 import lejos.utility.Delay;
+import levelSolver.Algorithms;
+import menu.StartMenu;
 
 public class Base {
 	
@@ -28,12 +32,15 @@ public class Base {
 //		float[] sensorDataRight = new float[2];
 		Movement move = new Movement(left, right);
 		 
+		//Move the pilot to its own class and asbtract its movement methods for our uses in the algorithms
 		DifferentialPilot robot = new DifferentialPilot(
 				Configuration.wheelDiameter, 
 				Configuration.trackWidth, 
 				left, 
 				right, 
 				true);
+		
+		//! Test runs, remove later on
 		System.out.println("Press any button!");
 		Button.waitForAnyPress();
 		robot.setAcceleration(4000);
@@ -67,20 +74,22 @@ public class Base {
 //		} catch (InterruptedException e) {
 //			e.printStackTrace();
 //		}
-				
+		
+		
+		// Draws the basic menu and wait for the user to select a value
+//		String[] items = {"Full course", "Line following", "Find and Push", "Bridge", "Crosses"};
+		String[] items = Arrays.toString(Algorithms.values()).replaceAll("^.|.$", "").split(", ");
+		StartMenu startMenu = new StartMenu();
+		startMenu.drawMenu(items);
+		int selectedMode = startMenu.selectMenuElement();
+		startMenu.clearMenu();
+		
+		//Start specified algorithm
+		
+		// -> All algorithms should run until the user interrupts via button press
+		
+		//TODO Remove this loop later when the algorithms have their own exit states
 		while (Button.ESCAPE.isUp()) {
-//			leftTouch.getTouchMode().fetchSample(sensorDataLeft, 0);
-//			rightTouch.getTouchMode().fetchSample(sensorDataRight, 0);
-//			
-//			if(sensorDataLeft[0] == 1.0 && sensorDataRight[0] == 1.0) {
-//				move.forward();
-//			} else if (sensorDataLeft[0] == 1.0) {
-//				move.left();
-//			} else if (sensorDataRight[0] == 1.0) {
-//				move.right();
-//			} else {
-//				move.stop();
-//			}
 		}
 	}
 	
