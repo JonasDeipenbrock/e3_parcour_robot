@@ -3,8 +3,8 @@ package e3base;
 import lejos.hardware.Button;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.hardware.motor.EV3MediumRegulatedMotor;
-import lejos.hardware.port.MotorPort;
-import lejos.hardware.port.SensorPort;
+import lejos.hardware.sensor.EV3ColorSensor;
+import lejos.hardware.sensor.EV3IRSensor;
 import lejos.hardware.sensor.EV3TouchSensor;
 import lejos.robotics.navigation.DifferentialPilot;
 import lejos.utility.Delay;
@@ -12,24 +12,28 @@ import lejos.utility.Delay;
 public class Base {
 	
 	// Motors
-	public static EV3LargeRegulatedMotor left = new EV3LargeRegulatedMotor(MotorPort.A);
-	public static EV3LargeRegulatedMotor right = new EV3LargeRegulatedMotor(MotorPort.B);
-	public static EV3MediumRegulatedMotor ipMotor = new EV3MediumRegulatedMotor(MotorPort.D);
+	public static EV3LargeRegulatedMotor left = new EV3LargeRegulatedMotor(Configuration.leftMotorPort);
+	public static EV3LargeRegulatedMotor right = new EV3LargeRegulatedMotor(Configuration.rightMotorPort);
+	public static EV3MediumRegulatedMotor irMotor = new EV3MediumRegulatedMotor(Configuration.irMotorPort);
 	
 	//Sensors
-	public static EV3TouchSensor leftTouch = new EV3TouchSensor(SensorPort.S1);
-	public static EV3TouchSensor rightTouch = new EV3TouchSensor(SensorPort.S2);
+	public static EV3TouchSensor leftTouch = new EV3TouchSensor(Configuration.leftTouchSensorPort);
+	public static EV3TouchSensor rightTouch = new EV3TouchSensor(Configuration.rightTouchSensorPort);
+	public static EV3ColorSensor colorSensor = new EV3ColorSensor(Configuration.colorSensorPort);
+	public static EV3IRSensor ipSensor = new EV3IRSensor(Configuration.irSensorPort);
 
 	public static void main(String[] args) {
 		
 //		float[] sensorDataLeft = new float[1];
 //		float[] sensorDataRight = new float[2];
 		Movement move = new Movement(left, right);
-		
-		double wheelDiameter = 3.15d;
-		double trackWidth = 19.2d;
 		 
-		DifferentialPilot robot = new DifferentialPilot(wheelDiameter,trackWidth,left,right, true);
+		DifferentialPilot robot = new DifferentialPilot(
+				Configuration.wheelDiameter, 
+				Configuration.trackWidth, 
+				left, 
+				right, 
+				true);
 		System.out.println("Press any button!");
 		Button.waitForAnyPress();
 		robot.setAcceleration(4000);
@@ -43,10 +47,10 @@ public class Base {
 		System.out.println("Stopped");
 		
 //		ipMotor.forward();
-		ipMotor.rotate(90);
+		irMotor.rotate(90);
 //		Delay.msDelay(600);
 		Delay.msDelay(1000);
-		ipMotor.rotate(-90);
+		irMotor.rotate(-90);
 //		ipMotor.stop();
 //		Delay.msDelay(1000);
 //		ipMotor.backward();

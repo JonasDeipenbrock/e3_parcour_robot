@@ -7,14 +7,17 @@ import lejos.hardware.port.SensorPort;
 public class Configuration {
 	
 	// Motor Port definitions
-    public final Port leftMotorPort = MotorPort.A;
-    public final Port rightMotorPort = MotorPort.B;
-    public final Port ipMotor = MotorPort.D;
+    public static final Port leftMotorPort = MotorPort.A;
+    public static final Port rightMotorPort = MotorPort.B;
+    public static final Port irMotorPort = MotorPort.D;
     
     // Sensor Port definitions
-    public final Port ipSensorPort = SensorPort.S4;
-    public final Port colorSensorPort = SensorPort.S2;
-    public final Port leftTouchSensorPort = SensorPort.S1;
-    public final Port rightTouchSensorPort = SensorPort.S3;
+    public static final Port irSensorPort = SensorPort.S4;
+    public static final Port colorSensorPort = SensorPort.S2;
+    public static final Port leftTouchSensorPort = SensorPort.S1;
+    public static final Port rightTouchSensorPort = SensorPort.S3;
     
+    // Car defaults
+	public static final double wheelDiameter = 3.15d;
+	public static final double trackWidth = 19.2d;
 }
