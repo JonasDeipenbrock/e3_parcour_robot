@@ -1,70 +1,54 @@
 package e3base;
 
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
-import lejos.utility.Delay;
+import lejos.robotics.navigation.DifferentialPilot;
 
 public class Movement {
 
 	static private Movement singleton;
-    private EV3LargeRegulatedMotor leftMotor;
+	private EV3LargeRegulatedMotor leftMotor;
 	private EV3LargeRegulatedMotor rightMotor;
+	private DifferentialPilot dPilot;
 
-    private Movement() {
-		leftMotor = new EV3LargeRegulatedMotor(Configuration.leftMotorPort);
-		rightMotor = new EV3LargeRegulatedMotor(Configuration.rightMotorPort);
-		leftMotor.setSpeed(leftMotor.getMaxSpeed());
-		rightMotor.setSpeed(rightMotor.getMaxSpeed());
-		EV3LargeRegulatedMotor[] motorArray = {rightMotor};
-		leftMotor.synchronizeWith(motorArray);
-    }
-    
-    public static Movement getInstance() {
-        if(singleton == null) {
-            singleton = new Movement();
-        }
-        
-        return singleton;
-    }
+	private Movement() {
+		dPilot = new DifferentialPilot(Configuration.wheelDiameter, Configuration.wheelDiameter,
+				Configuration.trackWidth, leftMotor, rightMotor, true);
+		dPilot.setTravelSpeed(dPilot.getMaxTravelSpeed());
+	}
 
-	public void left() {
-		leftMotor.startSynchronization();
-		leftMotor.backward();
-		rightMotor.forward();
-		leftMotor.endSynchronization();
+	public static Movement getInstance() {
+		if (singleton == null) {
+			singleton = new Movement();
+		}
+
+		return singleton;
 	}
-	public void right() {
-		leftMotor.startSynchronization();
-		leftMotor.forward();
-		rightMotor.backward();
-		leftMotor.endSynchronization();
+
+	public void moveByDistance(double distance) {
+		dPilot.travel(distance);
 	}
-	
+
+	public void turn(double angle) {
+		dPilot.rotate(angle);
+	}
+
 	public void forward() {
-		leftMotor.startSynchronization();
-		leftMotor.forward();
-		rightMotor.forward();
-		leftMotor.endSynchronization();
+		dPilot.forward();
 	}
+
 	public void backwards() {
-		leftMotor.startSynchronization();
-		leftMotor.backward();
-		rightMotor.backward();
-		leftMotor.endSynchronization();
+		dPilot.backward();
 	}
+
 	public void stop() {
-		leftMotor.stop(true);
-		rightMotor.stop(true);
+		dPilot.stop();
 	}
-	
+
 	public void turnLeft90() {
-		left();
-		Delay.msDelay(750);
-		stop();
+		turn(-90);
 	}
-	
+
 	public void turnRight90() {
-		right();
-		Delay.msDelay(750);
-		stop();
+		turn(90);
 	}
 }

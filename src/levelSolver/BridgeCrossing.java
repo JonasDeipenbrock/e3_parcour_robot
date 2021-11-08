@@ -1,16 +1,18 @@
 package levelSolver;
 
 import e3base.Base;
+import e3base.Movement;
 import lejos.hardware.sensor.EV3UltrasonicSensor;
 import lejos.robotics.navigation.DifferentialPilot;
+import lejos.robotics.navigation.Move;
 
 public class BridgeCrossing implements ILevelSolver {
 	
-	DifferentialPilot robot;
+	private Movement movement;
 	EV3UltrasonicSensor usSensor;
 	
-	public BridgeCrossing(DifferentialPilot pilot) {
-		robot = pilot;
+	public BridgeCrossing() {
+		movement = Movement.getInstance();
 		usSensor = Base.usSensor;
 	}
 
@@ -38,16 +40,16 @@ public class BridgeCrossing implements ILevelSolver {
 		float[] distanceDown = {0.01f};
 
 		//start driving
-		robot.forward();
+		movement.forward();
 		//as long as sensor distance < 0.1 drive;
 		while(distanceDown[0] < 0.18) {
 			if(distanceDown[0] > 0.04) {
-				robot.setRotateSpeed(10);
+				//movement.setRotateSpeed(10);
 			}
 			//get sensor distance
 			usSensor.fetchSample(distanceDown, 0);
 		}
-		robot.stop();
+		movement.stop();
 		System.out.println(distanceDown[0]);
 		//else do again
 	}
