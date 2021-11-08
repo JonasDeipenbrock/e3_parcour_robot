@@ -14,6 +14,7 @@ public class StartMenu implements IMenu {
 
 	@Override
 	public void drawMenu(String[] items) {
+		display.clear();
 		menu = new TextMenu(items, 1, "Choose a mode");
 		// TODO Auto-generated method stub
 

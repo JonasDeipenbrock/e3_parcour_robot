@@ -6,11 +6,12 @@ import lejos.hardware.Button;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.hardware.motor.EV3MediumRegulatedMotor;
 import lejos.hardware.sensor.EV3ColorSensor;
-import lejos.hardware.sensor.EV3IRSensor;
 import lejos.hardware.sensor.EV3TouchSensor;
+import lejos.hardware.sensor.EV3UltrasonicSensor;
 import lejos.robotics.navigation.DifferentialPilot;
 import lejos.utility.Delay;
 import levelSolver.Algorithms;
+import levelSolver.BridgeCrossing;
 import menu.StartMenu;
 
 public class Base {
@@ -24,7 +25,7 @@ public class Base {
 	public static EV3TouchSensor leftTouch = new EV3TouchSensor(Configuration.leftTouchSensorPort);
 	public static EV3TouchSensor rightTouch = new EV3TouchSensor(Configuration.rightTouchSensorPort);
 	public static EV3ColorSensor colorSensor = new EV3ColorSensor(Configuration.colorSensorPort);
-	public static EV3IRSensor ipSensor = new EV3IRSensor(Configuration.irSensorPort);
+	public static EV3UltrasonicSensor usSensor = new EV3UltrasonicSensor(Configuration.irSensorPort);
 
 	public static void main(String[] args) {
 		
@@ -39,25 +40,24 @@ public class Base {
 				left, 
 				right, 
 				true);
-		
 		//! Test runs, remove later on
-		System.out.println("Press any button!");
-		Button.waitForAnyPress();
+		//System.out.println("Press any button!");
+		//Button.waitForAnyPress();
 		robot.setAcceleration(4000);
-		robot.setTravelSpeed(20);
+//		robot.setTravelSpeed(20);
 		robot.setRotateSpeed(180);
-		System.out.println("Going forwards");
+		//System.out.println("Going forwards");
 //		robot.travel(20);
 //		robot.rotate(180);
 //		robot.rotate(-1000);
-		while(robot.isMoving())Thread.yield();
-		System.out.println("Stopped");
+		//while(robot.isMoving())Thread.yield();
+		//System.out.println("Stopped");
 		
 //		ipMotor.forward();
-		irMotor.rotate(90);
+		//irMotor.rotate(90);
 //		Delay.msDelay(600);
-		Delay.msDelay(1000);
-		irMotor.rotate(-90);
+		//Delay.msDelay(1000);
+		//irMotor.rotate(-90);
 //		ipMotor.stop();
 //		Delay.msDelay(1000);
 //		ipMotor.backward();
@@ -83,6 +83,26 @@ public class Base {
 		startMenu.drawMenu(items);
 		int selectedMode = startMenu.selectMenuElement();
 		startMenu.clearMenu();
+		Algorithms value = Algorithms.values()[selectedMode];
+		switch(value) {
+			case FULLPARCOUR:
+				System.out.println("Not implemented");
+				break;
+			case LINEFOLLOWING:
+				System.out.println("Not implemented");
+				break;
+			case FINDANDPUSH:
+				System.out.println("Not implemented");
+				break;
+			case BRIDGECROSSING:
+				//System.out.println(selectedMode);
+				BridgeCrossing bridge = new BridgeCrossing(robot);
+				bridge.run();
+				break;
+			case FINDCROSSES:
+				System.out.println("Not implemented");
+				break;
+		}
 		
 		//Start specified algorithm
 		
