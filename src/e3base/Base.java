@@ -19,13 +19,12 @@ public class Base {
 	// Motors
 	public static EV3LargeRegulatedMotor left = new EV3LargeRegulatedMotor(Configuration.leftMotorPort);
 	public static EV3LargeRegulatedMotor right = new EV3LargeRegulatedMotor(Configuration.rightMotorPort);
-	public static EV3MediumRegulatedMotor irMotor = new EV3MediumRegulatedMotor(Configuration.irMotorPort);
-	
+
 	//Sensors
 	public static EV3TouchSensor leftTouch = new EV3TouchSensor(Configuration.leftTouchSensorPort);
 	public static EV3TouchSensor rightTouch = new EV3TouchSensor(Configuration.rightTouchSensorPort);
 	public static EV3ColorSensor colorSensor = new EV3ColorSensor(Configuration.colorSensorPort);
-	public static EV3UltrasonicSensor usSensor = new EV3UltrasonicSensor(Configuration.irSensorPort);
+	public static EV3UltrasonicSensor usSensor = new EV3UltrasonicSensor(Configuration.ultrasonicSensorPort);
 
 	public static void main(String[] args) {
 		
