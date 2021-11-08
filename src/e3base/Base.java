@@ -51,7 +51,6 @@ public class Base {
 			case LINEFOLLOWING:
 				LineFollowing line = new LineFollowing();
 				line.run();
-				System.out.println("Not implemented");
 				break;
 			case FINDANDPUSH:
 				System.out.println("Not implemented");

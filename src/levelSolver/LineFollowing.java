@@ -28,7 +28,8 @@ public class LineFollowing implements ILevelSolver {
 	public void run() {
 		float[] bumperLeftValue = {0f};
 		float[] bumperRightValue = {0f};
-		while(bumperLeftValue[0] != 1 || bumperRightValue[0] != 1) {
+		move.forward();
+		while((bumperLeftValue[0] == 0 && bumperRightValue[0] == 0) && Button.ENTER.isUp()) {
 			follow();
 			
 			//fetch new samples
@@ -36,6 +37,7 @@ public class LineFollowing implements ILevelSolver {
 			bumperRight.fetchSample(bumperRightValue, 0);			
 		}
 		System.out.println("Bumped into something");
+		move.stop();
 
 	}
 	
@@ -44,13 +46,9 @@ public class LineFollowing implements ILevelSolver {
 	 */
 	void follow() {
 		float[] value = {0.15f};
-		float error = 0;
-		while(Button.ENTER.isUp()) {
-			sensor.fetchSample(value, 0);
-			error = ideal - value[0];
-		}
-		System.out.println(error);
-		System.out.println(sensor.getAvailableModes());
+		sensor.fetchSample(value, 0);
+		float error = ideal - value[0];
+		
 	}
 	
 	/**

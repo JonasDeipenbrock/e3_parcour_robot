@@ -11,8 +11,11 @@ public class Movement {
 	private DifferentialPilot dPilot;
 
 	private Movement() {
-		dPilot = new DifferentialPilot(Configuration.wheelDiameter, Configuration.wheelDiameter,
+		leftMotor = new EV3LargeRegulatedMotor(Configuration.leftMotorPort);
+		rightMotor = new EV3LargeRegulatedMotor(Configuration.rightMotorPort);
+		dPilot = new DifferentialPilot(Configuration.wheelDiameter,
 				Configuration.trackWidth, leftMotor, rightMotor, true);
+		
 		dPilot.setTravelSpeed(dPilot.getMaxTravelSpeed());
 	}
 
@@ -26,6 +29,10 @@ public class Movement {
 
 	public void moveByDistance(double distance) {
 		dPilot.travel(distance);
+	}
+	
+	public void steer() {
+//		dPilot.steer();
 	}
 
 	public void turn(double angle) {
