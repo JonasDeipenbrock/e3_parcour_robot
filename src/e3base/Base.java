@@ -30,7 +30,7 @@ public class Base {
 		
 //		float[] sensorDataLeft = new float[1];
 //		float[] sensorDataRight = new float[2];
-		Movement move = new Movement(left, right);
+		Movement move = Movement.getInstance();
 		 
 		//Move the pilot to its own class and asbtract its movement methods for our uses in the algorithms
 		DifferentialPilot robot = new DifferentialPilot(

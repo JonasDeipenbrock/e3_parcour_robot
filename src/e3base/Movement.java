@@ -1,20 +1,30 @@
 package e3base;
 
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
+import lejos.utility.Delay;
 
 public class Movement {
-	
-	EV3LargeRegulatedMotor leftMotor;
-	EV3LargeRegulatedMotor rightMotor;
-	
-	public Movement(EV3LargeRegulatedMotor left, EV3LargeRegulatedMotor right) {
-		leftMotor = left;
-		rightMotor = right;
+
+	static private Movement singleton;
+    private EV3LargeRegulatedMotor leftMotor;
+	private EV3LargeRegulatedMotor rightMotor;
+
+    private Movement() {
+		leftMotor = new EV3LargeRegulatedMotor(Configuration.leftMotorPort);
+		rightMotor = new EV3LargeRegulatedMotor(Configuration.rightMotorPort);
 		leftMotor.setSpeed(leftMotor.getMaxSpeed());
 		rightMotor.setSpeed(rightMotor.getMaxSpeed());
 		EV3LargeRegulatedMotor[] motorArray = {rightMotor};
 		leftMotor.synchronizeWith(motorArray);
-	}
+    }
+    
+    public static Movement getInstance() {
+        if(singleton == null) {
+            singleton = new Movement();
+        }
+        
+        return singleton;
+    }
 
 	public void left() {
 		leftMotor.startSynchronization();
@@ -46,15 +56,15 @@ public class Movement {
 		rightMotor.stop(true);
 	}
 	
-	public void turnLeft90() throws InterruptedException {
+	public void turnLeft90() {
 		left();
-		Thread.sleep(750);
+		Delay.msDelay(750);
 		stop();
 	}
 	
-	public void turnRight90() throws InterruptedException {
+	public void turnRight90() {
 		right();
-		Thread.sleep(750);
+		Delay.msDelay(750);
 		stop();
 	}
 }
