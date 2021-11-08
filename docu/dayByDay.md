@@ -17,3 +17,17 @@ get basic program running that allows us to controll both tracks individually an
 start attaching the sensors to the base
 
 start cleaning up the code
+
+# 25.10.2021
+
+Finish major design decisions for robot
+
+Experimented with phone holder
+
+# 08.11.2021
+
+Started writing code
+ - Menu
+ - Abstraction of Ultrasound Motor, Movement
+ - BridgeCrossing, FindAndPush
+
