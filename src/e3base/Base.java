@@ -3,15 +3,12 @@ package e3base;
 import java.util.Arrays;
 
 import lejos.hardware.Button;
-import lejos.hardware.motor.EV3LargeRegulatedMotor;
-import lejos.hardware.motor.EV3MediumRegulatedMotor;
 import lejos.hardware.sensor.EV3ColorSensor;
 import lejos.hardware.sensor.EV3TouchSensor;
 import lejos.hardware.sensor.EV3UltrasonicSensor;
-import lejos.robotics.navigation.DifferentialPilot;
-import lejos.utility.Delay;
 import levelSolver.Algorithms;
 import levelSolver.BridgeCrossing;
+import levelSolver.LineFollowing;
 import menu.StartMenu;
 
 public class Base {
@@ -22,52 +19,21 @@ public class Base {
 	public static EV3UltrasonicSensor usSensor = new EV3UltrasonicSensor(Configuration.ultrasonicSensorPort);
 
 	public static void main(String[] args) {
-		/*
-		float[] sensorDataLeft = new float[1];
-		float[] sensorDataRight = new float[2];
-		Movement move = Movement.getInstance();
+		
+//		float[] sensorDataLeft = new float[1];
+//		float[] sensorDataRight = new float[2];
+		//Movement move = Movement.getInstance();
 		 
 		//Move the pilot to its own class and asbtract its movement methods for our uses in the algorithms
-		DifferentialPilot robot = new DifferentialPilot(
-				Configuration.wheelDiameter, 
-				Configuration.trackWidth, 
-				left, 
-				right, 
-				true);
-		//! Test runs, remove later on
-		System.out.println("Press any button!");
-		Button.waitForAnyPress();
-		robot.setAcceleration(4000);
-		robot.setTravelSpeed(20);
-		robot.setRotateSpeed(180);
-		System.out.println("Going forwards");
-		robot.travel(20);
-		robot.rotate(180);
-		robot.rotate(-1000);
-		while(robot.isMoving())Thread.yield();
-		System.out.println("Stopped");
-		
-		ipMotor.forward();
-		irMotor.rotate(90);
-		Delay.msDelay(600);
-		Delay.msDelay(1000);
-		irMotor.rotate(-90);
-		ipMotor.stop();
-		Delay.msDelay(1000);
-		ipMotor.backward();
-		Delay.msDelay(600);
-		ipMotor.stop(false);
-		
-		try {
-			move.turnLeft90();
-			Thread.sleep(1000);
-			move.turnRight90();
-			ipMotor.forward();
-			Thread.sleep(1000);
-			ipMotor.stop();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}*/
+//		DifferentialPilot robot = new DifferentialPilot(
+//				Configuration.wheelDiameter, 
+//				Configuration.trackWidth, 
+//				left, 
+//				right, 
+//				true);
+//		robot.setAcceleration(4000);
+////		robot.setTravelSpeed(20);
+//		robot.setRotateSpeed(180);
 		
 		
 		// Draws the basic menu and wait for the user to select a value
@@ -83,6 +49,8 @@ public class Base {
 				System.out.println("Not implemented");
 				break;
 			case LINEFOLLOWING:
+				LineFollowing line = new LineFollowing();
+				line.run();
 				System.out.println("Not implemented");
 				break;
 			case FINDANDPUSH:
@@ -105,6 +73,15 @@ public class Base {
 		//TODO Remove this loop later when the algorithms have their own exit states
 		while (Button.ESCAPE.isUp()) {
 		}
+		
+		Movement move = Movement.getInstance();
+		move.close();
+		UltrasonicPosition pos = UltrasonicPosition.getInstance();
+		pos.close();
+		leftTouch.close();
+		rightTouch.close();
+		colorSensor.close();
+		usSensor.close();
 	}
 	
 	public static void runLoop() {

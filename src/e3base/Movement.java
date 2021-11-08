@@ -51,4 +51,9 @@ public class Movement {
 	public void turnRight90() {
 		turn(90);
 	}
+	
+	public void close() {
+		leftMotor.close();
+		rightMotor.close();
+	}
 }

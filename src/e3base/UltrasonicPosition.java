@@ -37,5 +37,9 @@ public class UltrasonicPosition {
             upState = false;
         }
     }
+    
+    public void close() {
+    	ultrasonicMotor.close();
+    }
 
 }
