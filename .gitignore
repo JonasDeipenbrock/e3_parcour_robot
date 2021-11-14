@@ -86,3 +86,7 @@ local.properties
 .classpath
 
 .vscode
+
+# IntelliJ files
+.idea
+*.iml
