@@ -16,7 +16,6 @@ public class Base {
 	public static EV3TouchSensor leftTouch = new EV3TouchSensor(Configuration.leftTouchSensorPort);
 	public static EV3TouchSensor rightTouch = new EV3TouchSensor(Configuration.rightTouchSensorPort);
 	public static EV3ColorSensor colorSensor = new EV3ColorSensor(Configuration.colorSensorPort);
-	public static EV3UltrasonicSensor usSensor = new EV3UltrasonicSensor(Configuration.ultrasonicSensorPort);
 
 	public static void main(String[] args) {
 		
@@ -77,10 +76,10 @@ public class Base {
 		move.close();
 		UltrasonicPosition pos = UltrasonicPosition.getInstance();
 		pos.close();
+		UltrasonicSensor.close();
 		leftTouch.close();
 		rightTouch.close();
 		colorSensor.close();
-		usSensor.close();
 	}
 	
 	public static void runLoop() {
