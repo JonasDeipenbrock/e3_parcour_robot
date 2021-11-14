@@ -8,6 +8,7 @@ import lejos.hardware.sensor.EV3TouchSensor;
 import lejos.hardware.sensor.EV3UltrasonicSensor;
 import levelSolver.Algorithms;
 import levelSolver.BridgeCrossing;
+import levelSolver.ILevelSolver;
 import levelSolver.LineFollowing;
 import menu.StartMenu;
 
@@ -36,35 +37,19 @@ public class Base {
 		
 		
 		// Draws the basic menu and wait for the user to select a value
-//		String[] items = {"Full course", "Line following", "Find and Push", "Bridge", "Crosses"};
-		String[] items = Arrays.toString(Algorithms.values()).replaceAll("^.|.$", "").split(", ");
+		String[] items = Algorithms.getNames();
 		StartMenu startMenu = new StartMenu();
 		startMenu.drawMenu(items);
 		int selectedMode = startMenu.selectMenuElement();
 		startMenu.clearMenu();
 		Algorithms value = Algorithms.values()[selectedMode];
-		switch(value) {
-			case FULLPARCOUR:
-				System.out.println("Not implemented");
-				break;
-			case LINEFOLLOWING:
-				LineFollowing line = new LineFollowing();
-				line.run();
-				break;
-			case FINDANDPUSH:
-				System.out.println("Not implemented");
-				break;
-			case BRIDGECROSSING:
-				//System.out.println(selectedMode);
-				BridgeCrossing bridge = new BridgeCrossing();
-				bridge.run();
-				break;
-			case FINDCROSSES:
-				System.out.println("Not implemented");
-				break;
+		try {
+			ILevelSolver executingAlgo = value.getLevelSolver().newInstance();
+			executingAlgo.run();
+		} catch (InstantiationException | IllegalAccessException e) {
+			e.printStackTrace();
+			System.exit(1);
 		}
-		
-		//Start specified algorithm
 		
 		// -> All algorithms should run until the user interrupts via button press
 		
