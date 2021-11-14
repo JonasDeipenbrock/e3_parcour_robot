@@ -59,8 +59,10 @@ public class Movement {
 		turn(90);
 	}
 	
-	public void close() {
-		leftMotor.close();
-		rightMotor.close();
+	public static void close() {
+		if (singleton != null) {
+			singleton.leftMotor.close();
+			singleton.rightMotor.close();
+		}
 	}
 }

@@ -38,8 +38,10 @@ public class UltrasonicPosition {
         }
     }
     
-    public void close() {
-    	ultrasonicMotor.close();
+    public static void close() {
+        if (singleton != null) {
+            singleton.ultrasonicMotor.close();
+        }
     }
 
 }

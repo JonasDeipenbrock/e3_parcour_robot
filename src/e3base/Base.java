@@ -72,10 +72,8 @@ public class Base {
 		while (Button.ESCAPE.isUp()) {
 		}
 		
-		Movement move = Movement.getInstance();
-		move.close();
-		UltrasonicPosition pos = UltrasonicPosition.getInstance();
-		pos.close();
+		Movement.close();
+		UltrasonicPosition.close();
 		UltrasonicSensor.close();
 		leftTouch.close();
 		rightTouch.close();
