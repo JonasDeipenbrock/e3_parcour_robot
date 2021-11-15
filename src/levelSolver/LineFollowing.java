@@ -28,9 +28,6 @@ public class LineFollowing implements ILevelSolver {
 	
 	@Override
 	public void run() {
-		init();
-		
-		
 		float[] bumperLeftValue = {0f};
 		float[] bumperRightValue = {0f};
 		//move.setMotorRotation(0);
@@ -47,23 +44,6 @@ public class LineFollowing implements ILevelSolver {
 
 	}
 	
-	public void init() {
-		System.out.println("Set on black");
-		Button.waitForAnyPress();
-		float[] dataBlack = sensor.getColorData();
-		System.out.println(String.format("black: %f, %f, %f", dataBlack[0], dataBlack[1], dataBlack[2]));
-		System.out.println("Set on line border");
-		Button.waitForAnyPress();
-		float[] dataBorder = sensor.getColorData();
-		System.out.println(String.format("border: %f, %f, %f", dataBorder[0], dataBorder[1], dataBorder[2]));
-		System.out.println("Set on white");
-		Button.waitForAnyPress();
-		float[] dataWhite = sensor.getColorData();
-		System.out.println(String.format("white: %f, %f, %f", dataWhite[0], dataWhite[1], dataWhite[2]));
-		System.out.println("Press any button to continue");
-		Button.waitForAnyPress();
-	}
-	
 	public boolean checkLoop(float bumperLeftValue, float bumperRightValue) {
 		if(timeOut > 10) {
 			System.out.println(timeOut);
@@ -75,7 +55,6 @@ public class LineFollowing implements ILevelSolver {
 	 * Follows a line
 	 */
 	void follow() {
-		//not correct rn
 		float[] value = sensor.getColorData();
 		float error = ideal - value[0];
 //		if(value[0] < 0.10F) {

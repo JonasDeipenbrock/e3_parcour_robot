@@ -8,7 +8,8 @@ public enum Algorithms {
 	LINEFOLLOWING("Line Following", LineFollowing.class),
 	FINDANDPUSH("Find and Push", FindAndPush.class),
 	BRIDGECROSSING("Bridge Crossing", BridgeCrossing.class),
-	FINDCROSSES("Find Crosses", FindCrosses.class);
+	FINDCROSSES("Find Crosses", FindCrosses.class),
+	CALIBRATION("Calibration", Calibration.class);
 
 	private final Class<ILevelSolver> levelSolver;
 	private final String name;
