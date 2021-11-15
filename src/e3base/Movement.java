@@ -63,6 +63,7 @@ public class Movement {
 		if (singleton != null) {
 			singleton.leftMotor.close();
 			singleton.rightMotor.close();
+			singleton = null;
 		}
 	}
 }

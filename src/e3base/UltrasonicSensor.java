@@ -32,6 +32,7 @@ public class UltrasonicSensor {
     public static void close() {
         if (singleton != null) {
             singleton.ultrasonicSensor.close();
+            singleton = null;
         }
     }
 }
