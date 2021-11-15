@@ -1,5 +1,6 @@
 package levelSolver;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public enum Algorithms {
@@ -33,7 +34,10 @@ public enum Algorithms {
 	}
 
 	public static String[] getNames() {
-		return Arrays.stream(Algorithms.values()).map(Algorithms::getName)
-				.toArray(String[]::new);
+		ArrayList<String> items = new ArrayList<>();
+		for (Algorithms item : Algorithms.values()) {
+			items.add(item.getName());
+		}
+		return items.toArray(new String[0]);
 	}
 }
