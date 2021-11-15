@@ -7,7 +7,6 @@ public class UltrasonicSensor {
     static private UltrasonicSensor singleton;
     private EV3UltrasonicSensor ultrasonicSensor;
     private SampleProvider ultrasonicSampleProvider;
-    private boolean upState = false;
     private float[] data = new float[1];
 
     private UltrasonicSensor() {

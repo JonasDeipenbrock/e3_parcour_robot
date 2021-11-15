@@ -26,14 +26,14 @@ public class UltrasonicPosition {
 
     public void moveUP() {
         if (upState == false) {
-            ultrasonicMotor.rotate(90);
+            ultrasonicMotor.rotate(-110);
             upState = true;
         }
     }
 
     public void moveDown() {
         if (upState == true) {
-            ultrasonicMotor.rotate(-90);
+            ultrasonicMotor.rotate(110);
             upState = false;
         }
     }

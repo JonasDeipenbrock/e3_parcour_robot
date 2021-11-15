@@ -13,10 +13,12 @@ public class Movement {
 	private Movement() {
 		leftMotor = new EV3LargeRegulatedMotor(Configuration.leftMotorPort);
 		rightMotor = new EV3LargeRegulatedMotor(Configuration.rightMotorPort);
+		//leftMotor.synchronizeWith(rightMotor);
 		dPilot = new DifferentialPilot(Configuration.wheelDiameter,
 				Configuration.trackWidth, leftMotor, rightMotor, true);
-		
-		dPilot.setTravelSpeed(dPilot.getMaxTravelSpeed());
+		leftMotor.setSpeed(-200);
+		rightMotor.setSpeed(-200);
+		//dPilot.setTravelSpeed(dPilot.getMaxTravelSpeed());
 	}
 
 	public static Movement getInstance() {
@@ -31,32 +33,56 @@ public class Movement {
 		dPilot.travel(distance);
 	}
 	
-	public void steer() {
+	public void steer(double turnRate) {
 //		dPilot.steer();
+		dPilot.steer(turnRate, 30, true);
+	}
+	 
+	/**
+	 * Set the motor turn speed with offset
+	 * default turn speed is -20
+	 * @param offSet
+	 */
+	public void setMotorRotation(float offSet) {
+		float baseSpeed = -150f;
+		//System.out.println(baseSpeed - offSet);
+		leftMotor.setSpeed(baseSpeed + offSet);
+		rightMotor.setSpeed(baseSpeed - offSet);
+		//System.out.println(leftMotor.getRotationSpeed());
+	}
+	
+	public void forward() {
+		leftMotor.backward();
+		rightMotor.backward();
+	}
+	
+	public void stop() {
+		leftMotor.stop();
+		rightMotor.stop();
 	}
 
 	public void turn(double angle) {
 		dPilot.rotate(angle);
 	}
 
-	public void forward() {
+	public void forwardPilot() {
 		dPilot.forward();
 	}
 
-	public void backwards() {
+	public void backwardsPilot() {
 		dPilot.backward();
 	}
 
-	public void stop() {
+	public void stopPilot() {
 		dPilot.stop();
 	}
 
 	public void turnLeft90() {
-		turn(-90);
+		turn(90);
 	}
 
 	public void turnRight90() {
-		turn(90);
+		turn(-90);
 	}
 	
 	public static void close() {

@@ -1,22 +1,15 @@
 package e3base;
 
-import java.util.Arrays;
-
 import lejos.hardware.Button;
-import lejos.hardware.sensor.EV3ColorSensor;
 import lejos.hardware.sensor.EV3TouchSensor;
-import lejos.hardware.sensor.EV3UltrasonicSensor;
 import levelSolver.Algorithms;
-import levelSolver.BridgeCrossing;
 import levelSolver.ILevelSolver;
-import levelSolver.LineFollowing;
 import menu.StartMenu;
 
 public class Base {
 	//Sensors
 	public static EV3TouchSensor leftTouch = new EV3TouchSensor(Configuration.leftTouchSensorPort);
 	public static EV3TouchSensor rightTouch = new EV3TouchSensor(Configuration.rightTouchSensorPort);
-	public static EV3ColorSensor colorSensor = new EV3ColorSensor(Configuration.colorSensorPort);
 
 	public static void main(String[] args) {
 		
@@ -62,7 +55,8 @@ public class Base {
 		UltrasonicSensor.close();
 		leftTouch.close();
 		rightTouch.close();
-		colorSensor.close();
+		//colorSensor.close();
+		ColorSensor.close();
 	}
 	
 	public static void runLoop() {
