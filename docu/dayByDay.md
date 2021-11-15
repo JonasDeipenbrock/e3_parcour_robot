@@ -31,3 +31,13 @@ Started writing code
  - Abstraction of Ultrasound Motor, Movement
  - BridgeCrossing, FindAndPush
 
+At home:
+ - Abstracted more hardware classes
+ - Improve Algorithm selection
+
+# 15.11.2021
+
+Improved follow the line code
+Started implementation of gap skipping
+Switched from Pilot to own control of motors
+Improved rigidity of roboter
