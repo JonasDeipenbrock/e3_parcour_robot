@@ -18,40 +18,45 @@ public class FindAndPush implements ILevelSolver {
 		// Move forward until distance goes above threshold
 		movement.forward();
 		while (uSensor.getDistance() < 0.3f) {
-			Delay.msDelay(10); //TODO: Check if needed
+			Delay.msDelay(100); //TODO: Check if needed
 		}
 		// Move forward until distance drops bellow threshold again
 		while (uSensor.getDistance() > 0.3f) {
-			Delay.msDelay(10); //TODO: Check if needed
+			Delay.msDelay(100); //TODO: Check if needed
 		}
+		//move a bit further
+		Delay.msDelay(500);
 		movement.stop();
 		// Turn 90 Degrees
 		movement.turnRight90();
 		// TODO: Move forward until Motors stop or push sensor
 		movement.forward();
-		Delay.msDelay(1000);
+		Delay.msDelay(2000);
 		movement.stop();
 		// turn right
 		movement.turnRight90();
 		// move forward
-		movement.moveByDistance(10);
+		movement.moveByDistance(20);
 		// turn left
 		movement.turnLeft90();
 		// move forward
-		movement.moveByDistance(10);
+		movement.moveByDistance(20);
 		// turn left
 		movement.turnLeft90();
 		// TODO: Push until end
 		movement.forward();
-		Delay.msDelay(1000);
+		Delay.msDelay(2000);
 		movement.stop();
 		// turn left
 		movement.turnLeft90();
 		// move forward
-		movement.moveByDistance(10);
+		movement.moveByDistance(20);
 		// turn left
 		movement.turnLeft90();
 		// TODO: move forward until blue band
+		movement.forward();
+		Delay.msDelay(2000);
+		movement.stop();
 	}
 
 	@Override
