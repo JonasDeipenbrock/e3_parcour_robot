@@ -3,20 +3,19 @@ package levelSolver;
 import e3base.Base;
 import e3base.ColorSensor;
 import e3base.Movement;
+import e3base.TachoTimeout;
 import lejos.hardware.Button;
 import lejos.hardware.sensor.EV3TouchSensor;
+import lejos.utility.Delay;
 
 public class LineFollowing implements ILevelSolver {
 
-	float blackValue = 0.01f;
-	float whiteValue = 0.41f;
-	float ideal = 0.20f;
-	float k = 300;
+	float k = 4000;
 	Movement move;
 	ColorSensor sensor;
 	EV3TouchSensor bumperLeft;
 	EV3TouchSensor bumperRight;
-	int timeOut = 0;
+	TachoTimeout tTimeout;
 	
 	
 	public LineFollowing() {
@@ -24,20 +23,27 @@ public class LineFollowing implements ILevelSolver {
 		sensor = ColorSensor.getInstance();
 		bumperLeft = Base.leftTouch;
 		bumperRight = Base.rightTouch;
+		tTimeout = new TachoTimeout();
 	}
 	
 	@Override
 	public void run() {
 		float[] bumperLeftValue = {0f};
 		float[] bumperRightValue = {0f};
-		//move.setMotorRotation(0);
-		//Delay.msDelay(10000);
+		Delay.msDelay(1000);
 		move.forward();
 		while(checkLoop(bumperLeftValue[0], bumperRightValue[0])) {
 			follow();
 			//fetch new samples
 			bumperLeft.fetchSample(bumperLeftValue, 0);
-			bumperRight.fetchSample(bumperRightValue, 0);			
+			bumperRight.fetchSample(bumperRightValue, 0);
+			if(tTimeout.updateCounter() > 200) {
+				System.out.println("lost the line");
+				refind();
+				tTimeout.resetCounter(); //reset timeout
+			}
+			Delay.msDelay(100);
+			System.out.println(tTimeout.updateCounter());
 		}
 		System.out.println("Bumped into something");
 		move.stop();
@@ -45,9 +51,6 @@ public class LineFollowing implements ILevelSolver {
 	}
 	
 	public boolean checkLoop(float bumperLeftValue, float bumperRightValue) {
-		if(timeOut > 10) {
-			System.out.println(timeOut);
-		}
 		return (bumperLeftValue == 0 && bumperRightValue == 0) && Button.ENTER.isUp();
 	}
 	
@@ -55,23 +58,19 @@ public class LineFollowing implements ILevelSolver {
 	 * Follows a line
 	 */
 	void follow() {
-		float[] value = sensor.getColorData();
-		float error = ideal - value[0];
-//		if(value[0] < 0.10F) {
-//			System.out.println("black");
-//			timeOut++;
-//		}
-		System.out.println(k * error);
-		//move.steer(k * error);
-		move.setMotorRotation(k * error);
-		move.forward();
+		float value = sensor.getGreyScale();
+		float error = (sensor.getBorderValue() - value) * k;
+		if(value > 0.08) {
+			tTimeout.resetCounter();
+		}
+		move.setMotorRotation(error);
 	}
 	
 	/**
 	 * Refinds the line
 	 */
 	void refind() {
-		
+		Delay.msDelay(10000);
 	}
 	
 	/**

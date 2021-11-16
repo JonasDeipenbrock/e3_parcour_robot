@@ -44,11 +44,28 @@ public class Movement {
 	 * @param offSet
 	 */
 	public void setMotorRotation(float offSet) {
-		float baseSpeed = -150f;
-		//System.out.println(baseSpeed - offSet);
-		leftMotor.setSpeed(baseSpeed + offSet);
-		rightMotor.setSpeed(baseSpeed - offSet);
-		//System.out.println(leftMotor.getRotationSpeed());
+		float baseSpeed = 150f;
+		float leftSpeed = baseSpeed + offSet;
+		float rightSpeed = baseSpeed - offSet;
+		
+		if(leftSpeed < 0) {
+			leftSpeed = Math.abs(leftSpeed);
+			leftMotor.setSpeed(leftSpeed);
+			rightMotor.setSpeed(rightSpeed);
+			leftMotor.forward();
+			rightMotor.backward();
+		} else if(rightSpeed < 0) {
+			rightSpeed = Math.abs(rightSpeed);
+			rightMotor.setSpeed(rightSpeed);
+			leftMotor.setSpeed(leftSpeed);
+			rightMotor.forward();
+			leftMotor.backward();
+		} else {
+			rightMotor.setSpeed(rightSpeed);
+			leftMotor.setSpeed(leftSpeed);
+			rightMotor.backward();
+			leftMotor.backward();
+		}
 	}
 	
 	public void forward() {
@@ -83,6 +100,13 @@ public class Movement {
 
 	public void turnRight90() {
 		turn(-90);
+	}
+	
+	public int[] getTachoCount() {
+		int left = leftMotor.getTachoCount();
+		int right = rightMotor.getTachoCount();
+		int[] count = {left, right};
+		return count;
 	}
 	
 	public static void close() {
