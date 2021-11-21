@@ -42,7 +42,7 @@ public class ColorSensor {
      */
     public boolean checkBlue() {
     	getColorData();
-    	if(data[0] < 150 && data[1] < 150 && data[2] > 100) return true;
+    	if(data[0] < 0.5 && data[1] < 0.5 && data[2] > 0.5) return true;
     	return false;
     }
     
