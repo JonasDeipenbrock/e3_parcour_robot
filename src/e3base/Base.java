@@ -6,15 +6,13 @@ import lejos.utility.Delay;
 import levelSolver.Algorithms;
 import levelSolver.ILevelSolver;
 import menu.StartMenu;
+import wrappers.BumperSensor;
 import wrappers.ColorSensor;
 import wrappers.Movement;
 import wrappers.UltrasonicPosition;
 import wrappers.UltrasonicSensor;
 
 public class Base {
-	//Sensors
-	public static EV3TouchSensor leftTouch = new EV3TouchSensor(Configuration.leftTouchSensorPort);
-	public static EV3TouchSensor rightTouch = new EV3TouchSensor(Configuration.rightTouchSensorPort);
 
 	public static void main(String[] args) {
 		runLoop();
@@ -49,8 +47,7 @@ public class Base {
 		Movement.close();
 		UltrasonicPosition.close();
 		UltrasonicSensor.close();
-		leftTouch.close();
-		rightTouch.close();
+		BumperSensor.close();
 		ColorSensor.close();
 	}
 

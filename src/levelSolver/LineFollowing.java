@@ -1,10 +1,9 @@
 package levelSolver;
 
-import e3base.Base;
 import e3base.TachoTimeout;
 import lejos.hardware.Button;
-import lejos.hardware.sensor.EV3TouchSensor;
 import lejos.utility.Delay;
+import wrappers.BumperSensor;
 import wrappers.ColorSensor;
 import wrappers.Movement;
 
@@ -13,30 +12,23 @@ public class LineFollowing implements ILevelSolver {
 	float k = 4000;
 	Movement move;
 	ColorSensor sensor;
-	EV3TouchSensor bumperLeft;
-	EV3TouchSensor bumperRight;
+	BumperSensor bumper;
 	TachoTimeout tTimeout;
 	
 	
 	public LineFollowing() {
 		move = Movement.getInstance();
 		sensor = ColorSensor.getInstance();
-		bumperLeft = Base.leftTouch;
-		bumperRight = Base.rightTouch;
+		bumper = BumperSensor.getInstance();
 		tTimeout = new TachoTimeout();
 	}
 	
 	@Override
 	public void run() {
-		float[] bumperLeftValue = {0f};
-		float[] bumperRightValue = {0f};
 		Delay.msDelay(1000);
 		move.forward();
-		while(checkLoop(bumperLeftValue[0], bumperRightValue[0])) {
+		while(checkLoop()) {
 			follow();
-			//fetch new samples
-			bumperLeft.fetchSample(bumperLeftValue, 0);
-			bumperRight.fetchSample(bumperRightValue, 0);
 			if(tTimeout.updateCounter() > 200) {
 				System.out.println("lost the line");
 				refind();
@@ -50,8 +42,16 @@ public class LineFollowing implements ILevelSolver {
 
 	}
 	
-	public boolean checkLoop(float bumperLeftValue, float bumperRightValue) {
-		return (bumperLeftValue == 0 && bumperRightValue == 0) && Button.ENTER.isUp();
+	/**
+	 * Check if break condition is already met
+	 * @return
+	 */
+	public boolean checkLoop() {
+		if(Button.ENTER.isDown()) return false;
+		//this should not be checked here cause we cant drive around the box this way
+		if(bumper.anyBumbed()) return false;	
+		if(sensor.checkBlue()) return false;
+		return true;
 	}
 	
 	/**

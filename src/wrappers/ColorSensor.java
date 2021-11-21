@@ -36,6 +36,16 @@ public class ColorSensor {
         return singleton;
     }
     
+    /**
+     * Check if over blue
+     * @return true if over blue, else false
+     */
+    public boolean checkBlue() {
+    	getColorData();
+    	if(data[0] < 150 && data[1] < 150 && data[2] > 100) return true;
+    	return false;
+    }
+    
     public float getGreyScale() {
     	colorSampleProvider.fetchSample(data, 0);
     	float grey = (data[0] + data[1] + data[2]) / 3;
