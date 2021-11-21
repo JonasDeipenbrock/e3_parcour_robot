@@ -1,10 +1,10 @@
 package levelSolver;
 
 import e3base.Base;
-import e3base.Movement;
-import e3base.UltrasonicSensor;
 import lejos.robotics.navigation.DifferentialPilot;
 import lejos.robotics.navigation.Move;
+import wrappers.Movement;
+import wrappers.UltrasonicSensor;
 
 public class BridgeCrossing implements ILevelSolver {
 	

@@ -1,5 +1,7 @@
 package e3base;
 
+import wrappers.Movement;
+
 public class TachoTimeout {
 	
 	float count = 0;

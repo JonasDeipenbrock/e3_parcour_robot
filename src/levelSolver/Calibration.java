@@ -1,7 +1,7 @@
 package levelSolver;
 
-import e3base.ColorSensor;
 import lejos.hardware.Button;
+import wrappers.ColorSensor;
 
 public class Calibration implements ILevelSolver {
 	

@@ -1,12 +1,12 @@
 package levelSolver;
 
 import e3base.Base;
-import e3base.ColorSensor;
-import e3base.Movement;
 import e3base.TachoTimeout;
 import lejos.hardware.Button;
 import lejos.hardware.sensor.EV3TouchSensor;
 import lejos.utility.Delay;
+import wrappers.ColorSensor;
+import wrappers.Movement;
 
 public class LineFollowing implements ILevelSolver {
 

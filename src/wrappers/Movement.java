@@ -1,5 +1,6 @@
-package e3base;
+package wrappers;
 
+import e3base.Configuration;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.robotics.navigation.DifferentialPilot;
 

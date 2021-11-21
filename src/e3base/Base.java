@@ -6,6 +6,10 @@ import lejos.utility.Delay;
 import levelSolver.Algorithms;
 import levelSolver.ILevelSolver;
 import menu.StartMenu;
+import wrappers.ColorSensor;
+import wrappers.Movement;
+import wrappers.UltrasonicPosition;
+import wrappers.UltrasonicSensor;
 
 public class Base {
 	//Sensors

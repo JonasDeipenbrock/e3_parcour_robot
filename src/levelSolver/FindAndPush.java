@@ -1,9 +1,9 @@
 package levelSolver;
 
-import e3base.Movement;
-import e3base.UltrasonicPosition;
-import e3base.UltrasonicSensor;
 import lejos.utility.Delay;
+import wrappers.Movement;
+import wrappers.UltrasonicPosition;
+import wrappers.UltrasonicSensor;
 
 public class FindAndPush implements ILevelSolver {
 
