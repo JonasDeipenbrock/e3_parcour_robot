@@ -28,8 +28,7 @@ public class BumperSensor {
      */
     public boolean anyBumbed() {
     	getBumps();
-    	if(data[0] == 1 && data[1] == 1) return true;
-    	return false;
+    	return data[0] == 1 || data[1] == 1;
     }
 
     /**

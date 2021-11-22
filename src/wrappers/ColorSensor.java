@@ -1,5 +1,6 @@
 package wrappers;
 
+import Colors.Blue;
 import e3base.Configuration;
 import lejos.hardware.sensor.EV3ColorSensor;
 import lejos.robotics.SampleProvider;
@@ -42,8 +43,8 @@ public class ColorSensor {
      */
     public boolean checkBlue() {
     	getColorData();
-    	if(data[0] < 0.5 && data[1] < 0.5 && data[2] > 0.5) return true;
-    	return false;
+    	//if(data[0] < 0.5 && data[1] > 0.05 && data[2] > 0.05) return true;
+    	return Blue.isColor(data);
     }
     
     public float getGreyScale() {

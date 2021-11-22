@@ -59,7 +59,9 @@ public class LineFollowing implements ILevelSolver {
 		if(Button.ENTER.isDown()) return false;
 		//this should not be checked here cause we cant drive around the box this way
 		if(bumper.anyBumbed()) return false;	
-		if(sensor.checkBlue()) return false;
+		if(sensor.checkBlue()) {
+			return false;
+		}
 		return true;
 	}
 	
@@ -96,12 +98,13 @@ public class LineFollowing implements ILevelSolver {
 	boolean refind() {
 		final int start_tacho = Motor.A.getTachoCount();
 		Motor.A.forward();
+		int degree = 720;
 		
 		while(true) {
 			if(searchLineTask()) {
 				return true;
 			}
-			if(turnRobotTask(start_tacho)) {
+			if(turnRobotTask(start_tacho, degree)) {
 				return false;
 			}
 		}
@@ -111,8 +114,8 @@ public class LineFollowing implements ILevelSolver {
 	 * turns the robot
 	 * @return
 	 */
-	boolean turnRobotTask(int start_tacho) {
-		if(Motor.A.getTachoCount() > start_tacho + 720) {
+	boolean turnRobotTask(int start_tacho, int degree) {
+		if(Motor.A.getTachoCount() > start_tacho + degree) {
 			return true;
 		}
 		return false;
