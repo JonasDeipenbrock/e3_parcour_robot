@@ -41,3 +41,10 @@ Improved follow the line code
 Started implementation of gap skipping
 Switched from Pilot to own control of motors
 Improved rigidity of roboter
+
+# 22.11.2021
+
+Implemented Color detection
+Added rolling average to line following and fine tuned configuration value
+Added motor stalled check to find and push
+Improved construction of roboter further by adding a third wheel per side
