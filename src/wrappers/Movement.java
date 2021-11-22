@@ -109,6 +109,10 @@ public class Movement {
 		int[] count = {left, right};
 		return count;
 	}
+
+	public boolean motorStalles() {
+		return leftMotor.isStalled() || rightMotor.isStalled();
+	}
 	
 	public static void close() {
 		if (singleton != null) {

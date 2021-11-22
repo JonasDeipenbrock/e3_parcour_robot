@@ -1,6 +1,7 @@
 package levelSolver;
 
 import lejos.utility.Delay;
+import wrappers.ColorSensor;
 import wrappers.Movement;
 import wrappers.UltrasonicPosition;
 import wrappers.UltrasonicSensor;
@@ -12,6 +13,7 @@ public class FindAndPush implements ILevelSolver {
 		UltrasonicPosition uPosition = UltrasonicPosition.getInstance();
 		Movement movement = Movement.getInstance();
 		UltrasonicSensor uSensor = UltrasonicSensor.getInstance();
+		ColorSensor colorSensor = ColorSensor.getInstance();
 
 		// Move Ultrasonic Sensor in to upright position
 		uPosition.moveUP();
@@ -21,6 +23,7 @@ public class FindAndPush implements ILevelSolver {
 			Delay.msDelay(100); //TODO: Check if needed
 		}
 		// Move forward until distance drops bellow threshold again
+		Delay.msDelay(100);
 		while (uSensor.getDistance() > 0.3f) {
 			Delay.msDelay(100); //TODO: Check if needed
 		}
@@ -29,9 +32,11 @@ public class FindAndPush implements ILevelSolver {
 		movement.stop();
 		// Turn 90 Degrees
 		movement.turnRight90();
-		// TODO: Move forward until Motors stop or push sensor
+		// Move forward until Motors stop or push sensor
 		movement.forward();
-		Delay.msDelay(2000);
+		while (!movement.motorStalles()) {
+			Delay.msDelay(100); //TODO: Check if needed
+		}
 		movement.stop();
 		// turn right
 		movement.turnRight90();
@@ -43,9 +48,11 @@ public class FindAndPush implements ILevelSolver {
 		movement.moveByDistance(20);
 		// turn left
 		movement.turnLeft90();
-		// TODO: Push until end
+		// Push until end
 		movement.forward();
-		Delay.msDelay(2000);
+		while (!movement.motorStalles()) {
+			Delay.msDelay(100); //TODO: Check if needed
+		}
 		movement.stop();
 		// turn left
 		movement.turnLeft90();
@@ -53,9 +60,11 @@ public class FindAndPush implements ILevelSolver {
 		movement.moveByDistance(20);
 		// turn left
 		movement.turnLeft90();
-		// TODO: move forward until blue band
+		// move forward until blue band
 		movement.forward();
-		Delay.msDelay(2000);
+		while (!colorSensor.checkBlue()) {
+			Delay.msDelay(100); //TODO: Check if needed
+		}
 		movement.stop();
 	}
 
