@@ -1,8 +1,8 @@
 package levelSolver;
 
+import e3base.Base;
 import e3base.TachoTimeout;
 import lejos.hardware.Button;
-import lejos.hardware.motor.Motor;
 import lejos.utility.Delay;
 import wrappers.BumperSensor;
 import wrappers.ColorSensor;
@@ -18,7 +18,6 @@ public class LineFollowing implements ILevelSolver {
 	
 	boolean onLineFlag = true;
 	
-	
 	public LineFollowing() {
 		move = Movement.getInstance();
 		sensor = ColorSensor.getInstance();
@@ -26,29 +25,73 @@ public class LineFollowing implements ILevelSolver {
 		tTimeout = new TachoTimeout();
 	}
 	
+	
 	@Override
 	public void run() {
+		int iteration = 1;
+		int generations = 50;
+		float[] buffer = new float[generations];
+		
 		Delay.msDelay(1000);
 		move.forward();
 		while(checkLoop()) {
-			if(onLineFlag) {
-				//continue following the line
-				follow();
-				
-			} else {
-				//search for line
-				if(refind()) {
-					onLineFlag = true;
+			float currentError = calculateError();
+			int rest = iteration % generations;
+			buffer[rest] = currentError;
+			if(iteration % generations == 0) {			
+				float errorSum = 0;
+				for (float err: buffer) {
+					errorSum += err;
 				}
+				float medianError = errorSum / generations;
+				System.out.println(medianError);
+				follow(medianError);
 			}
+			iteration++;
+//			if(onLineFlag) {
+//				//continue following the line
+//				follow();
+//				
+//			} else {
+//				//search for line
+//				if(refind()) {
+//					onLineFlag = true;
+//				}
+//			}
 			
 			//delay to limit fetching of samples and make movement smoother
-			// current value is 1/10 of a second as polling rate / delay
-			Delay.msDelay(100);
+			// current value is 1/20 of a second as polling rate / delay
+			//Delay.msDelay(50);
 		}
 		System.out.println("Line following ended");
 		move.stop();
-
+	}
+	
+	float calculateError() {
+		//get grey value and calculate error
+		float value = sensor.getGreyScale();
+		if(value > 0.08) {
+			tTimeout.resetCounter();
+		}
+		
+		float error = (sensor.getBorderValue() - value) * K;
+		return error;
+	}
+	
+	/**
+	 * Follows a line
+	 */
+	void follow(float error) {
+		//reset timeout if still on line
+		//set rotation from error
+		move.setMotorRotation(error);
+		
+		//check if the line is missing for to long
+		if(tTimeout.updateCounter() > 400) {
+			System.out.println("lost the line");
+			onLineFlag = false;
+			tTimeout.resetCounter(); //reset timeout
+		}
 	}
 	
 	/**
@@ -65,27 +108,6 @@ public class LineFollowing implements ILevelSolver {
 		return true;
 	}
 	
-	/**
-	 * Follows a line
-	 */
-	void follow() {
-		//get grey value and calculate error
-		float value = sensor.getGreyScale();
-		float error = (sensor.getBorderValue() - value) * K;
-		//reset timeout if still on line
-		if(value > 0.08) {
-			tTimeout.resetCounter();
-		}
-		//set rotation from error
-		move.setMotorRotation(error);
-		
-		//check if the line is missing for to long
-		if(tTimeout.updateCounter() > 200) {
-			System.out.println("lost the line");
-			onLineFlag = false;
-			tTimeout.resetCounter(); //reset timeout
-		}
-	}
 	
 	
 	/**
@@ -96,18 +118,24 @@ public class LineFollowing implements ILevelSolver {
 	 * Also this method is blocking due to the inner while loop and cant break on collision
 	 */
 	boolean refind() {
-		final int start_tacho = Motor.A.getTachoCount();
-		Motor.A.forward();
-		int degree = 720;
+		move.stop();
+		final int[] start_tachos = move.getTachoCount();
+		//move.turnLeft90();
+		move.turnLeft();
+		int degree = 360;
 		
-		while(true) {
+		while(checkLoop()) {
 			if(searchLineTask()) {
 				return true;
 			}
-			if(turnRobotTask(start_tacho, degree)) {
+			if(turnRobotTask(start_tachos[1], degree)) {
+				move.stop();
+				Base.endProgram();
+				System.exit(1);
 				return false;
 			}
 		}
+		return true;
 	}
 	
 	/**
@@ -115,7 +143,9 @@ public class LineFollowing implements ILevelSolver {
 	 * @return
 	 */
 	boolean turnRobotTask(int start_tacho, int degree) {
-		if(Motor.A.getTachoCount() > start_tacho + degree) {
+		int count = move.getTachoCount()[1];
+		System.out.println(String.format("%d, %d", count, start_tacho - degree));
+		if(count > start_tacho + degree) {
 			return true;
 		}
 		return false;
@@ -126,7 +156,7 @@ public class LineFollowing implements ILevelSolver {
 	 * @return true if the line has been found
 	 */
 	boolean searchLineTask() {
-		if(sensor.getGreyScale() > 0.5) {
+		if(sensor.getGreyScale() > 0.08f) {
 			return true;
 		}
 		return false;

@@ -1,7 +1,6 @@
 package e3base;
 
 import lejos.hardware.lcd.LCD;
-import lejos.hardware.sensor.EV3TouchSensor;
 import lejos.utility.Delay;
 import levelSolver.Algorithms;
 import levelSolver.ILevelSolver;

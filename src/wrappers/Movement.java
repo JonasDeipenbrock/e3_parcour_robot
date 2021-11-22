@@ -14,12 +14,14 @@ public class Movement {
 	private Movement() {
 		leftMotor = new EV3LargeRegulatedMotor(Configuration.leftMotorPort);
 		rightMotor = new EV3LargeRegulatedMotor(Configuration.rightMotorPort);
-		//leftMotor.synchronizeWith(rightMotor);
+		EV3LargeRegulatedMotor[] rightMotorArray = {rightMotor};
+		leftMotor.synchronizeWith(rightMotorArray);
 		dPilot = new DifferentialPilot(Configuration.wheelDiameter,
 				Configuration.trackWidth, leftMotor, rightMotor, true);
-		leftMotor.setSpeed(-200);
-		rightMotor.setSpeed(-200);
+		//leftMotor.setSpeed();
+		//rightMotor.setSpeed(-200);
 		//dPilot.setTravelSpeed(dPilot.getMaxTravelSpeed());
+		
 	}
 
 	public static Movement getInstance() {
@@ -29,7 +31,19 @@ public class Movement {
 
 		return singleton;
 	}
+	
+	public void setSpeed(float speed) {
+		final float offset = 0.75f;
+		leftMotor.startSynchronization();
+		leftMotor.setSpeed(speed * offset);
+		rightMotor.setSpeed(speed);
+		leftMotor.endSynchronization();
+	}
 
+	public void setToMaxSpeed() {
+		setSpeed(leftMotor.getMaxSpeed());
+	}
+	
 	public void moveByDistance(double distance) {
 		dPilot.travel(distance);
 	}
@@ -51,32 +65,57 @@ public class Movement {
 		
 		if(leftSpeed < 0) {
 			leftSpeed = Math.abs(leftSpeed);
+			leftMotor.startSynchronization();
 			leftMotor.setSpeed(leftSpeed);
 			rightMotor.setSpeed(rightSpeed);
 			leftMotor.forward();
 			rightMotor.backward();
+			leftMotor.endSynchronization();
 		} else if(rightSpeed < 0) {
 			rightSpeed = Math.abs(rightSpeed);
+			leftMotor.startSynchronization();
 			rightMotor.setSpeed(rightSpeed);
 			leftMotor.setSpeed(leftSpeed);
 			rightMotor.forward();
 			leftMotor.backward();
+			leftMotor.endSynchronization();
 		} else {
+			leftMotor.startSynchronization();
 			rightMotor.setSpeed(rightSpeed);
 			leftMotor.setSpeed(leftSpeed);
 			rightMotor.backward();
 			leftMotor.backward();
+			leftMotor.endSynchronization();
 		}
 	}
 	
 	public void forward() {
+		leftMotor.startSynchronization();
 		leftMotor.backward();
 		rightMotor.backward();
+		leftMotor.endSynchronization();
+	}
+	
+	public void backward() {
+		leftMotor.startSynchronization();
+		leftMotor.forward();
+		rightMotor.forward();
+		leftMotor.endSynchronization();
 	}
 	
 	public void stop() {
+		leftMotor.startSynchronization();
 		leftMotor.stop();
 		rightMotor.stop();
+		leftMotor.endSynchronization();
+	}
+	
+	public void turnLeft() {
+		rightMotor.backward();
+	}
+	
+	public void turnRight() {
+		leftMotor.backward();
 	}
 
 	public void turn(double angle) {
