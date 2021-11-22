@@ -1,5 +1,6 @@
 package levelSolver;
 
+import lejos.hardware.Button;
 import lejos.utility.Delay;
 import wrappers.ColorSensor;
 import wrappers.Movement;
@@ -20,11 +21,13 @@ public class FindAndPush implements ILevelSolver {
 		// Move forward until distance goes above threshold
 		movement.forward();
 		while (uSensor.getDistance() < 0.3f) {
+			if (Button.ENTER.isDown()) return;
 			Delay.msDelay(100); //TODO: Check if needed
 		}
 		// Move forward until distance drops bellow threshold again
 		Delay.msDelay(100);
 		while (uSensor.getDistance() > 0.3f) {
+			if (Button.ENTER.isDown()) return;
 			Delay.msDelay(100); //TODO: Check if needed
 		}
 		//move a bit further
@@ -35,6 +38,7 @@ public class FindAndPush implements ILevelSolver {
 		// Move forward until Motors stop or push sensor
 		movement.forward();
 		while (!movement.motorStalles()) {
+			if (Button.ENTER.isDown()) return;
 			Delay.msDelay(100); //TODO: Check if needed
 		}
 		movement.stop();
@@ -51,6 +55,7 @@ public class FindAndPush implements ILevelSolver {
 		// Push until end
 		movement.forward();
 		while (!movement.motorStalles()) {
+			if (Button.ENTER.isDown()) return;
 			Delay.msDelay(100); //TODO: Check if needed
 		}
 		movement.stop();
@@ -63,6 +68,7 @@ public class FindAndPush implements ILevelSolver {
 		// move forward until blue band
 		movement.forward();
 		while (!colorSensor.checkBlue()) {
+			if (Button.ENTER.isDown()) return;
 			Delay.msDelay(100); //TODO: Check if needed
 		}
 		movement.stop();
