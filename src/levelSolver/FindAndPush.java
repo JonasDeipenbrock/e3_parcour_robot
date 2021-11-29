@@ -1,5 +1,6 @@
 package levelSolver;
 
+import e3base.Helper;
 import lejos.hardware.Button;
 import lejos.utility.Delay;
 import wrappers.ColorSensor;
@@ -15,63 +16,72 @@ public class FindAndPush implements ILevelSolver {
 		Movement movement = Movement.getInstance();
 		UltrasonicSensor uSensor = UltrasonicSensor.getInstance();
 		ColorSensor colorSensor = ColorSensor.getInstance();
+		Helper helper = Helper.getInstance();
 
 		// Move Ultrasonic Sensor in to upright position
 		uPosition.moveUP();
+		
+		//move to right wall by turning 45 degree
+		//turn straight again
+		
 		// Move forward until distance goes above threshold
-		movement.forward();
-		while (uSensor.getDistance() < 0.3f) {
-			if (Button.ENTER.isDown()) return;
-			Delay.msDelay(100); //TODO: Check if needed
+		while (helper.checkLoop(false)) {
+			float distanceLeft = uSensor.getDistance();
+			if(distanceLeft > 0.4f) break;
+			//we want to reach 0.3m to the right ideally
+			float offset = (0.28f - distanceLeft) * -1000;	//error is difference from ideal wall point
+			movement.setMotorRotation(offset);
+			movement.forward();
+			System.out.println(String.format("%f, offset: %f", distanceLeft, offset));
 		}
-		// Move forward until distance drops bellow threshold again
-		Delay.msDelay(100);
-		while (uSensor.getDistance() > 0.3f) {
-			if (Button.ENTER.isDown()) return;
-			Delay.msDelay(100); //TODO: Check if needed
-		}
-		//move a bit further
-		Delay.msDelay(500);
+		
 		movement.stop();
-		// Turn 90 Degrees
-		movement.turnRight90();
-		// Move forward until Motors stop or push sensor
-		movement.forward();
-		while (!movement.motorStalles()) {
-			if (Button.ENTER.isDown()) return;
-			Delay.msDelay(100); //TODO: Check if needed
-		}
-		movement.stop();
-		// turn right
-		movement.turnRight90();
-		// move forward
-		movement.moveByDistance(20);
-		// turn left
-		movement.turnLeft90();
-		// move forward
-		movement.moveByDistance(20);
-		// turn left
-		movement.turnLeft90();
-		// Push until end
-		movement.forward();
-		while (!movement.motorStalles()) {
-			if (Button.ENTER.isDown()) return;
-			Delay.msDelay(100); //TODO: Check if needed
-		}
-		movement.stop();
-		// turn left
-		movement.turnLeft90();
-		// move forward
-		movement.moveByDistance(20);
-		// turn left
-		movement.turnLeft90();
-		// move forward until blue band
-		movement.forward();
-		while (!colorSensor.checkBlue()) {
-			if (Button.ENTER.isDown()) return;
-			Delay.msDelay(100); //TODO: Check if needed
-		}
-		movement.stop();
+		
+//		// Move forward until distance drops bellow threshold again -> Box found
+//		Delay.msDelay(100);
+//		while (uSensor.getDistance() > 0.3f) {
+//			if (Button.ENTER.isDown()) return;
+//			Delay.msDelay(100); //TODO: Check if needed
+//		}
+//		
+//		//move a bit further -> in front of box
+//		Delay.msDelay(500);
+//		movement.stop();
+//		movement.turnRight90();
+//		
+//		// Move forward until Motors stop or push sensor -> Push box against wall
+//		movement.forward();
+//		while (!movement.motorStalles()) {
+//			if (Button.ENTER.isDown()) return;
+//			Delay.msDelay(100); //TODO: Check if needed
+//		}
+//		
+//		//Move around box by one side
+//		movement.stop();
+//		movement.turnRight90();
+//		movement.moveByDistance(20);
+//		movement.turnLeft90();
+//		movement.moveByDistance(20);
+//		movement.turnLeft90();
+//		
+//		// Push box against second wall -> Box in corner
+//		movement.forward();
+//		while (!movement.motorStalles()) {
+//			if (Button.ENTER.isDown()) return;
+//			Delay.msDelay(100); //TODO: Check if needed
+//		}
+//		
+//		//Drive to exit
+//		movement.stop();
+//		movement.turnLeft90();
+//		movement.moveByDistance(20);
+//		movement.turnLeft90();
+//		movement.forward();
+//		while (!colorSensor.checkBlue()) {	//stop on blue line
+//			if (Button.ENTER.isDown()) return;
+//			Delay.msDelay(100); //TODO: Check if needed
+//		}
+//		movement.stop();
 	}
 
 	@Override

@@ -1,8 +1,8 @@
 package levelSolver;
 
 import e3base.Base;
+import e3base.Helper;
 import e3base.TachoTimeout;
-import lejos.hardware.Button;
 import lejos.utility.Delay;
 import wrappers.BumperSensor;
 import wrappers.ColorSensor;
@@ -15,6 +15,7 @@ public class LineFollowing implements ILevelSolver {
 	ColorSensor sensor;
 	BumperSensor bumper;
 	TachoTimeout tTimeout;
+	Helper helper;
 	
 	boolean onLineFlag = true;
 	
@@ -22,6 +23,7 @@ public class LineFollowing implements ILevelSolver {
 		move = Movement.getInstance();
 		sensor = ColorSensor.getInstance();
 		bumper = BumperSensor.getInstance();
+		helper = Helper.getInstance();
 		tTimeout = new TachoTimeout();
 	}
 	
@@ -34,7 +36,7 @@ public class LineFollowing implements ILevelSolver {
 		
 		Delay.msDelay(1000);
 		move.forward();
-		while(checkLoop()) {
+		while(helper.checkLoop(true)) {
 			float currentError = calculateError();
 			int rest = iteration % generations;
 			buffer[rest] = currentError;
@@ -94,21 +96,6 @@ public class LineFollowing implements ILevelSolver {
 		}
 	}
 	
-	/**
-	 * Check if break condition is already met
-	 * @return
-	 */
-	public boolean checkLoop() {
-		if(Button.ENTER.isDown()) return false;
-		//this should not be checked here cause we cant drive around the box this way
-		if(bumper.anyBumbed()) return false;	
-		if(sensor.checkBlue()) {
-			return false;
-		}
-		return true;
-	}
-	
-	
 	
 	/**
 	 * Refinds the line
@@ -124,7 +111,7 @@ public class LineFollowing implements ILevelSolver {
 		move.turnLeft();
 		int degree = 360;
 		
-		while(checkLoop()) {
+		while(helper.checkLoop(true)) {
 			if(searchLineTask()) {
 				return true;
 			}

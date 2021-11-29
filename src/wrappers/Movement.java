@@ -12,18 +12,16 @@ public class Movement {
 	private EV3LargeRegulatedMotor leftMotor;
 	private EV3LargeRegulatedMotor rightMotor;
 	private DifferentialPilot dPilot;
+	
 
 	private Movement() {
 		leftMotor = new EV3LargeRegulatedMotor(Configuration.leftMotorPort);
 		rightMotor = new EV3LargeRegulatedMotor(Configuration.rightMotorPort);
-		EV3LargeRegulatedMotor[] rightMotorArray = {rightMotor};
-		leftMotor.synchronizeWith(rightMotorArray);
 		dPilot = new DifferentialPilot(Configuration.wheelDiameter,
 				Configuration.trackWidth, leftMotor, rightMotor, true);
-		//leftMotor.setSpeed();
-		//rightMotor.setSpeed(-200);
-		//dPilot.setTravelSpeed(dPilot.getMaxTravelSpeed());
-		
+		leftMotor.setAcceleration(500);
+		rightMotor.setAcceleration(500);
+		setSpeed(leftMotor.getMaxSpeed(), 1);
 	}
 
 	public static Movement getInstance() {
@@ -34,8 +32,8 @@ public class Movement {
 		return singleton;
 	}
 	
-	public void setSpeed(float speed) {
-		final float offset = 0.75f;
+	public void setSpeed(float speed, float offset) {
+		//final float offset = 0.75f;
 		leftMotor.startSynchronization();
 		leftMotor.setSpeed(speed * offset);
 		rightMotor.setSpeed(speed);
@@ -43,7 +41,7 @@ public class Movement {
 	}
 
 	public void setToMaxSpeed() {
-		setSpeed(leftMotor.getMaxSpeed());
+		setSpeed(leftMotor.getMaxSpeed(), 1);
 	}
 	
 	public void moveByDistance(double distance) {
@@ -92,9 +90,12 @@ public class Movement {
 	}
 	
 	public void forward() {
+		leftMotor.synchronizeWith(new EV3LargeRegulatedMotor[] {rightMotor});
 		leftMotor.startSynchronization();
 		leftMotor.backward();
+//		leftMotor.rotate(-1000, true);
 		rightMotor.backward();
+//		rightMotor.rotate(-1000,true);
 		leftMotor.endSynchronization();
 	}
 	
