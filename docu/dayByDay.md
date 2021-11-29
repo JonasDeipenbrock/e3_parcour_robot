@@ -48,3 +48,12 @@ Implemented Color detection
 Added rolling average to line following and fine tuned configuration value
 Added motor stalled check to find and push
 Improved construction of roboter further by adding a third wheel per side
+
+# 29.11.2021
+
+Implemented improved Find and Push
+Experiments with sensors
+Reduced friction on both chains
+Fixed stop problem of the roboter
+Added some weight at theback of the roboter
+
