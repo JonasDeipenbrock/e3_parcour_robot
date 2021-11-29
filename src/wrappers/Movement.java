@@ -1,8 +1,10 @@
 package wrappers;
 
 import e3base.Configuration;
+import lejos.hardware.Button;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.robotics.navigation.DifferentialPilot;
+import lejos.utility.Delay;
 
 public class Movement {
 
@@ -104,10 +106,22 @@ public class Movement {
 	}
 	
 	public void stop() {
+		int[] startTacho = getTachoCount();
 		leftMotor.startSynchronization();
-		leftMotor.stop();
-		rightMotor.stop();
+		leftMotor.stop(false);
+		rightMotor.stop(false);
 		leftMotor.endSynchronization();
+		while((leftMotor.isMoving() || rightMotor.isMoving()) && Button.ENTER.isUp()) {
+			
+		}
+		int[] endTacho = getTachoCount();
+		int difference = (endTacho[0] - startTacho[0]) - (endTacho[1] - startTacho[1]) ;
+		difference *= 1.1;
+		if (difference > 0) {
+			rightMotor.rotate(difference);
+		}else if (difference < 0) {
+			leftMotor.rotate(-difference);
+		}
 	}
 	
 	public void turnLeft() {
