@@ -26,11 +26,15 @@ public class Helper {
 	 * Check if break condition is already met
 	 * @return
 	 */
-	public boolean checkLoop(boolean bumperCheck) {
-		if(Button.ENTER.isDown()) return false;
+	public boolean checkLoop(boolean bumperCheck, boolean blueMode) {
+		if(Button.ENTER.isDown()) {
+			System.out.println("Button Notaus");
+			return false;
+		};
 		//this should not be checked here cause we cant drive around the box this way
 		if(bumperCheck && bumper.anyBumbed()) return false;
-		if(sensor.checkBlue()) {
+		if(blueMode && sensor.checkBlue()) {
+			System.out.println("Exited cause of blue");
 			return false;
 		}
 		return true;

@@ -36,7 +36,7 @@ public class LineFollowing implements ILevelSolver {
 		
 		Delay.msDelay(1000);
 		move.forward();
-		while(helper.checkLoop(true)) {
+		while(helper.checkLoop(true, false)) {
 			float currentError = calculateError();
 			int rest = iteration % generations;
 			buffer[rest] = currentError;
@@ -111,7 +111,7 @@ public class LineFollowing implements ILevelSolver {
 		move.turnLeft();
 		int degree = 360;
 		
-		while(helper.checkLoop(true)) {
+		while(helper.checkLoop(true, false)) {
 			if(searchLineTask()) {
 				return true;
 			}

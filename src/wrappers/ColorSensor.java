@@ -47,6 +47,12 @@ public class ColorSensor {
     	return Blue.isColor(data);
     }
     
+    public boolean checkWhite() {
+    	float grey = getGreyScale();
+    	return grey > 0.1f;
+    	
+    }
+    
     public float getGreyScale() {
     	colorSampleProvider.fetchSample(data, 0);
     	float grey = (data[0] + data[1] + data[2]) / 3;
