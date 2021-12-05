@@ -14,15 +14,16 @@ public class StartMenu implements IMenu {
 
 	@Override
 	public void drawMenu(String[] items) {
+		// Clear stdout from screen
+		for (int i = 0; i < 8; i++) {
+  			System.out.println("");
+		}
 		display.clear();
 		menu = new TextMenu(items, 1, "Choose a mode");
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public int selectMenuElement() {
-		// TODO Auto-generated method stub
 		if(menu == null) {
 			return -1;
 		}
