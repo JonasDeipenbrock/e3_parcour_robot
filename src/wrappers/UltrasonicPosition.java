@@ -41,7 +41,7 @@ public class UltrasonicPosition {
     
     public static void close() {
         if (singleton != null) {
-            singleton.moveDown();
+            //singleton.moveDown();
             singleton.ultrasonicMotor.close();
             singleton = null;
         }

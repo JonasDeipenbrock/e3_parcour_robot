@@ -86,7 +86,7 @@ public class LineFollowing implements ILevelSolver {
 	void follow(float error) {
 		//reset timeout if still on line
 		//set rotation from error
-		move.setMotorRotation(error);
+		move.setMotorRotation(error, 150f);
 		
 		//check if the line is missing for to long
 		if(tTimeout.updateCounter() > 400) {

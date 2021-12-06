@@ -3,29 +3,52 @@ package levelSolver;
 import e3base.Helper;
 import lejos.utility.Delay;
 import wrappers.ColorSensor;
+import wrappers.LEDPattern;
 import wrappers.Movement;
-import wrappers.UltrasonicPosition;
+import wrappers.StatusIndicator;
 import wrappers.UltrasonicSensor;
 
 public class FindAndPush implements ILevelSolver {
 
 	@Override
 	public void run() {
-		UltrasonicPosition uPosition = UltrasonicPosition.getInstance();
 		Movement movement = Movement.getInstance();
 		UltrasonicSensor uSensor = UltrasonicSensor.getInstance();
 		ColorSensor colorSensor = ColorSensor.getInstance();
 		Helper helper = Helper.getInstance();
-
-		// Move Ultrasonic Sensor in to upright position
-		uPosition.moveUP();
+		StatusIndicator ind = StatusIndicator.getInstance();
+		
+		ind.setLED(LEDPattern.LED_GREEN_FLASH);
+		
 		
 		//move to right wall by turning 45 degree
 		//turn straight again
-		
-		//Kurve hardcoden
-		//ideale distanz zur wand sind etwa 5 cm, also linke entfernung ungefähr 25cm
-		
+		int iteration = 1;
+		int generations = 50;
+		float[] buffer = new float[generations];
+		// Move forward until distance goes above threshold
+		while (helper.checkLoop(false, false)) {
+			//we want to reach 0.25m to the right ideally
+			float distanceRight = uSensor.getDistance();
+			if(distanceRight > 0.35f) break;
+			float offset = (0.22f - distanceRight) * -1000;	//error is difference from ideal wall point
+			
+			int rest = iteration % generations;
+			buffer[rest] = offset;
+			
+			if(iteration % generations == 0) {			
+				float errorSum = 0;
+				for (float err: buffer) {
+					errorSum += err;
+				}
+				float medianError = errorSum / generations;
+				System.out.println(medianError);
+				movement.setMotorRotation(medianError, 500f);
+				movement.forward();
+			}
+			iteration++;
+			System.out.println(String.format("%f, offset: %f", distanceRight, offset));
+		}
 		// Move forward until distance goes above threshold
 //		while (helper.checkLoop(false)) {
 //			float distanceLeft = uSensor.getDistance();
@@ -36,6 +59,10 @@ public class FindAndPush implements ILevelSolver {
 //			movement.forward();
 //			System.out.println(String.format("%f, offset: %f", distanceLeft, offset));
 //		}
+		ind.setLED(LEDPattern.LED_RED);
+		
+		movement.moveByDistance(10);
+		
 		System.out.println("Moving to box");
 		while(helper.checkLoop(false, false)) {
 			float distanceLeft = uSensor.getDistance();
@@ -124,8 +151,14 @@ public class FindAndPush implements ILevelSolver {
 		movement.forward();
 		while (!colorSensor.checkBlue()) {	//stop on blue line
 			if (!helper.checkLoop(false, false)) break;
+			float distanceRight = uSensor.getDistance();
+			//we want to reach 0.5m to the right ideally
+			float offset = (0.4f - distanceRight) * -500;	//error is difference from ideal wall point
+			movement.setMotorRotation(offset, 500f);
+			movement.forward();
 		}
 		movement.stop();
+		ind.setLED(LEDPattern.LED_RED);
 	}
 
 	@Override

@@ -58,8 +58,8 @@ public class Movement {
 	 * default turn speed is -20
 	 * @param offSet
 	 */
-	public void setMotorRotation(float offSet) {
-		float baseSpeed = 150f;
+	public void setMotorRotation(float offSet, float baseSpeed) {
+		//float baseSpeed = 150f;
 		float leftSpeed = baseSpeed + offSet;
 		float rightSpeed = baseSpeed - offSet;
 		
