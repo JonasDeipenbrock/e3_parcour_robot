@@ -1,3 +1,5 @@
+package wrappers;
+
 public enum LEDPattern {
     LED_BLACK(0),
     LED_GREEN(1),
