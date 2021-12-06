@@ -57,3 +57,8 @@ Reduced friction on both chains
 Fixed stop problem of the roboter
 Added some weight at theback of the roboter
 
+# 06.12.2021
+
+Implemented Yolo find Crosses
+Hardcoded Bridge cross
+Experiment in push and find (didn't Work)
