@@ -63,6 +63,16 @@ public class ColorSensor {
     	colorSampleProvider.fetchSample(data, 0);
         return data;
     }
+    
+    public void setToColorIdMode() {
+    	colorSampleProvider = colorSensor.getColorIDMode();
+    	colorSensor.setCurrentMode(0);
+    }
+    
+    public float getColorId() {
+    	colorSampleProvider.fetchSample(data, 0);
+    	return data[0];
+    }
 
     public static void close() {
         if (singleton != null) {
