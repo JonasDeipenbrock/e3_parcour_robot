@@ -61,4 +61,11 @@ Added some weight at theback of the roboter
 
 Implemented Yolo find Crosses
 Hardcoded Bridge cross
-Experiment in push and find (didn't Work)
+Experiment in find and push (didn't Work)
+
+# 13.12.2021
+
+Simplified Color detection by using colorid
+Implemented Zic-Zac find Crosses
+Further fine tuned find and push
+Added bumper to roboter
