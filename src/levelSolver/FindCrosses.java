@@ -25,7 +25,6 @@ public class FindCrosses implements ILevelSolver {
 		helper = Helper.getInstance();
 		color = ColorSensor.getInstance();
 		audio = LocalEV3.get().getAudio();
-		color.setToColorIdMode();
 		movement.setToMaxSpeed();
 		movement.setToMaxAcc();
 //		movement.forward();
@@ -39,7 +38,8 @@ public class FindCrosses implements ILevelSolver {
 //			passOnceRight();
 //		}
 		normalClearing();
-
+		movement.stop();
+		audio.systemSound(2);
 	}
 	
 	//	0 = red
@@ -81,43 +81,111 @@ public class FindCrosses implements ILevelSolver {
 		audio.systemSound(2);
 	}
 	
+	/**
+	 * Trys to find the crosses using a cross pattern
+	 */
 	void normalClearing() {
 		//initial drive to corner
 		while(helper.checkLoop(true, false)) {
 			movement.forward();
-			//check color here as well
+			if(checkColorCondition()) {
+				return;
+			}
 		}
 		movement.stop();
 		movement.moveByDistance(-5);
 		movement.turnLeft90();
 		while(true) {
-			passOnceLeft();
-			passOnceRight();
+			if(passOnceLeft()) {
+				return;
+			}
+			if(passOnceRight()) {
+				return;
+			}
 		}
 	}
 	
-	void passOnceLeft() {
+	/**
+	 * Goes from left to right turning Left in the end
+	 * @return true if the crosses both have been found
+	 */
+	boolean passOnceLeft() {
 		movement.forward();
 		while(helper.checkLoop(true, false)) {
-			//pass
+			if(checkColorCondition()) {
+				return true;
+			}
 		}
 		movement.stop();
 		movement.moveByDistance(-5);
+		if(checkColorCondition()) {
+			return true;
+		}
 		movement.turnLeft90();
+		if(checkColorCondition()) {
+			return true;
+		}
 		movement.moveByDistance(5);
+		if(checkColorCondition()) {
+			return true;
+		}
 		movement.turnLeft90();
+		return false;
 	}
 	
-	void passOnceRight() {
+	/**
+	 * Goes from right to left turning right in the end
+	 * @return true if the crosses both have been found
+	 */
+	boolean passOnceRight() {
 		movement.forward();
 		while(helper.checkLoop(true, false)) {
-			//pass
+			if(checkColorCondition()) {
+				return true;
+			}
 		}
 		movement.stop();
 		movement.moveByDistance(-5);
+		if(checkColorCondition()) {
+			return true;
+		}
 		movement.turnRight90();
+		if(checkColorCondition()) {
+			return true;
+		}
 		movement.moveByDistance(5);
+		if(checkColorCondition()) {
+			return true;
+		}
 		movement.turnRight90();
+		return false;
+	}
+	
+	/*
+	 * Returns true when both colors have been found
+	 */
+	boolean checkColorCondition() {
+		int colorId = color.getColor();
+		System.out.println(colorId);
+		if(colorId == Color.WHITE) {
+			whiteMissing = false;
+			audio.systemSound(1);
+		}
+		if(colorId == Color.RED) {
+			redMissing = false;
+			audio.systemSound(1);
+		}
+		if(colorId == Color.BLUE) {
+			//handle blue line case aka drive back a bit and turn some weird angle
+			System.out.println(colorId);
+		}
+		if(!whiteMissing || !redMissing) {
+			System.out.println("one found");
+		}
+		if (!(whiteMissing || redMissing)) {
+			System.out.println("both");
+		}
+		return !(whiteMissing || redMissing);
 	}
 
 	@Override
