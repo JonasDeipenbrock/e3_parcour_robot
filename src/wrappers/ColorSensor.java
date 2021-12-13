@@ -1,9 +1,9 @@
 package wrappers;
 
-import Colors.Blue;
 import e3base.Configuration;
 import lejos.hardware.sensor.EV3ColorSensor;
 import lejos.robotics.SampleProvider;
+import lejos.robotics.Color;
 
 public class ColorSensor {
 
@@ -24,10 +24,6 @@ public class ColorSensor {
     	colorSampleProvider = colorSensor.getRGBMode();
     	colorSampleProvider.fetchSample(data, 0);
     }
-    
-    public void setMode(int modeID) {
-    	colorSensor.setCurrentMode(modeID);
-    }
 
     public static ColorSensor getInstance() {
         if(singleton == null) {
@@ -37,14 +33,8 @@ public class ColorSensor {
         return singleton;
     }
     
-    /**
-     * Check if over blue
-     * @return true if over blue, else false
-     */
     public boolean checkBlue() {
-    	getColorData();
-    	//if(data[0] < 0.5 && data[1] > 0.05 && data[2] > 0.05) return true;
-    	return Blue.isColor(data);
+    	return getColor() == Color.BLUE;
     }
     
     public boolean checkWhite() {
@@ -63,15 +53,29 @@ public class ColorSensor {
     	colorSampleProvider.fetchSample(data, 0);
         return data;
     }
-    
-    public void setToColorIdMode() {
-    	colorSampleProvider = colorSensor.getColorIDMode();
-    	colorSensor.setCurrentMode(0);
-    }
-    
-    public float getColorId() {
-    	colorSampleProvider.fetchSample(data, 0);
-    	return data[0];
+
+    public int getColor() {
+        int colorId = colorSensor.getColorID();
+        switch (colorId) {
+            case Color.BLACK:
+            case Color.NONE:
+            case Color.BROWN:
+            case Color.DARK_GRAY:
+                return Color.BLACK;
+            case Color.WHITE:
+            case Color.YELLOW:
+            case Color.LIGHT_GRAY:
+                return Color.WHITE;
+            case Color.RED:
+            case Color.MAGENTA:
+            case Color.PINK:
+            case Color.ORANGE:
+                return Color.RED;
+            case Color.BLUE:
+            case Color.CYAN:
+                return Color.BLUE;
+        }
+        return colorId;
     }
 
     public static void close() {

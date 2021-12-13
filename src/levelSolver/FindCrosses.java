@@ -7,6 +7,7 @@ import lejos.hardware.Audio;
 import lejos.hardware.ev3.LocalEV3;
 import wrappers.ColorSensor;
 import wrappers.Movement;
+import lejos.robotics.Color;
 
 public class FindCrosses implements ILevelSolver {
 
@@ -21,7 +22,6 @@ public class FindCrosses implements ILevelSolver {
 		helper = Helper.getInstance();
 		color = ColorSensor.getInstance();
 		audio = LocalEV3.get().getAudio();
-		color.setToColorIdMode();
 //		movement.forward();
 //		while(helper.checkLoop(true, false)) {
 //			//pass
@@ -54,14 +54,14 @@ public class FindCrosses implements ILevelSolver {
 			movement.turn(newAngle);
 			movement.forward();
 			while(helper.checkLoop(true, false)) {
-				float colorId = color.getColorId();
-				if(colorId == 6.0f) {
+				int colorId = color.getColor();
+				if(colorId == Color.WHITE) {
 					whiteMissing = false;
 				}
-				if(colorId == 0.0f) {
+				if(colorId == Color.RED) {
 					redMissing = false;
 				}
-				if(colorId == 1.0f) {
+				if(colorId == Color.BLUE) {
 					//handle blue line case aka drive back a bit and turn some weird angle
 					System.out.println(colorId);
 				}
