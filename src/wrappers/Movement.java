@@ -39,6 +39,11 @@ public class Movement {
 		rightMotor.setSpeed(speed);
 		leftMotor.endSynchronization();
 	}
+	
+	public void setToMaxAcc() {
+		leftMotor.setAcceleration(6000);
+		rightMotor.setAcceleration(6000);
+	}
 
 	public void setToMaxSpeed() {
 		setSpeed(leftMotor.getMaxSpeed(), 1);
