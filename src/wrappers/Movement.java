@@ -6,6 +6,8 @@ import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.robotics.navigation.DifferentialPilot;
 import lejos.utility.Delay;
 
+import java.util.concurrent.Callable;
+
 public class Movement {
 
 	static private Movement singleton;
@@ -17,11 +19,13 @@ public class Movement {
 	private Movement() {
 		leftMotor = new EV3LargeRegulatedMotor(Configuration.leftMotorPort);
 		rightMotor = new EV3LargeRegulatedMotor(Configuration.rightMotorPort);
+		leftMotor.resetTachoCount();
+		rightMotor.resetTachoCount();
+		leftMotor.synchronizeWith(new EV3LargeRegulatedMotor[] {rightMotor});
 		dPilot = new DifferentialPilot(Configuration.wheelDiameter,
 				Configuration.trackWidth, leftMotor, rightMotor, true);
-		leftMotor.setAcceleration(500);
-		rightMotor.setAcceleration(500);
-		setSpeed(leftMotor.getMaxSpeed(), 1);
+		setAcceleration(500);
+		setToMaxSpeed();
 	}
 
 	public static Movement getInstance() {
@@ -32,32 +36,32 @@ public class Movement {
 		return singleton;
 	}
 	
-	public void setSpeed(float speed, float offset) {
-		//final float offset = 0.75f;
+	public void setSpeed(float speed) {
 		leftMotor.startSynchronization();
-		leftMotor.setSpeed(speed * offset);
+		leftMotor.setSpeed(speed);
 		rightMotor.setSpeed(speed);
+		leftMotor.endSynchronization();
+	}
+
+	public void setAcceleration(int acceleration) {
+		leftMotor.startSynchronization();
+		leftMotor.setAcceleration(acceleration);
+		rightMotor.setAcceleration(acceleration);
 		leftMotor.endSynchronization();
 	}
 	
 	public void setToMaxAcc() {
-		leftMotor.setAcceleration(6000);
-		rightMotor.setAcceleration(6000);
+		setAcceleration(6000);
 	}
 
 	public void setToMaxSpeed() {
-		setSpeed(leftMotor.getMaxSpeed(), 1);
+		setSpeed(leftMotor.getMaxSpeed());
 	}
 	
 	public void moveByDistance(double distance) {
 		dPilot.travel(distance);
 	}
-	
-	public void steer(double turnRate) {
-//		dPilot.steer();
-		dPilot.steer(turnRate, 30, true);
-	}
-	 
+
 	/**
 	 * Set the motor turn speed with offset
 	 * default turn speed is -20
@@ -93,14 +97,41 @@ public class Movement {
 			leftMotor.endSynchronization();
 		}
 	}
-	
+
+	public void forwardUntil(Callable<Boolean> condition) {
+		float scaleFactor = 0.2f;
+		//get tacho count
+		int[] tacho = getTachoCount();
+
+		int startSpeed = leftMotor.getSpeed();
+		rightMotor.setSpeed(leftMotor.getSpeed());
+		forward();
+		boolean conditionMet = false;
+		while(!conditionMet) {
+			try {
+				conditionMet = condition.call();
+			} catch (Exception e) {
+				System.out.println("Error occured");
+				e.printStackTrace();
+				conditionMet = true;
+			}
+			//steer based on tacho count
+			int[] currentTacho = getTachoCount();
+			int difference = (tacho[0] - currentTacho[0]) - (tacho[1] - currentTacho[1]);
+			leftMotor.startSynchronization();
+			leftMotor.setSpeed(startSpeed + difference*scaleFactor);
+			rightMotor.setSpeed(startSpeed - difference*scaleFactor);
+			leftMotor.endSynchronization();
+		}
+		stop();
+		leftMotor.setSpeed(startSpeed);
+		rightMotor.setSpeed(startSpeed);
+	}
+
 	public void forward() {
-		leftMotor.synchronizeWith(new EV3LargeRegulatedMotor[] {rightMotor});
 		leftMotor.startSynchronization();
 		leftMotor.backward();
-//		leftMotor.rotate(-1000, true);
 		rightMotor.backward();
-//		rightMotor.rotate(-1000,true);
 		leftMotor.endSynchronization();
 	}
 	
@@ -142,18 +173,6 @@ public class Movement {
 		dPilot.rotate(angle);
 	}
 
-	public void forwardPilot() {
-		dPilot.forward();
-	}
-
-	public void backwardsPilot() {
-		dPilot.backward();
-	}
-
-	public void stopPilot() {
-		dPilot.stop();
-	}
-
 	public void turnLeft90() {
 		turn(90);
 	}
@@ -169,10 +188,6 @@ public class Movement {
 		return count;
 	}
 
-	public boolean motorStalles() {
-		return leftMotor.isStalled() || rightMotor.isStalled();
-	}
-	
 	public static void close() {
 		if (singleton != null) {
 			singleton.leftMotor.close();

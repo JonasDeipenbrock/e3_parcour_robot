@@ -1,7 +1,11 @@
 package levelSolver;
 
+import e3base.Helper;
+import lejos.hardware.Button;
 import lejos.utility.Delay;
 import wrappers.Movement;
+
+import java.util.concurrent.Callable;
 
 public class FullParcour implements ILevelSolver {
 
@@ -10,9 +14,11 @@ public class FullParcour implements ILevelSolver {
 		// TODO Auto-generated method stub
 		Movement move = Movement.getInstance();
 		move.setToMaxSpeed();
-		move.forward();
-		Delay.msDelay(10000);
-		move.stop();
+		move.forwardUntil(new Callable<Boolean>() {
+			public Boolean call() {
+				return Button.ENTER.isDown();
+			}
+		});
 	}
 
 	@Override

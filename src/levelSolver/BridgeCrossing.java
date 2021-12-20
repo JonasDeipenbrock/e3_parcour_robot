@@ -40,7 +40,7 @@ public class BridgeCrossing implements ILevelSolver {
 	 */
 	void toCorner() {
 		float distanceDown = 0.01f;
-		movement.setSpeed(200f, 1f);
+		movement.setSpeed(200f);
 		//start driving
 		movement.forward();
 		//as long as sensor distance < 0.18 drive;
