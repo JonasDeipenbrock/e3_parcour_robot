@@ -131,6 +131,19 @@ public class Movement {
 		rightMotor.setSpeed(startSpeed);
 	}
 
+	public void waitUntil(IDrivingCondition condition) {
+		boolean conditionMet = false;
+		while(!conditionMet && Button.ENTER.isUp()) {
+			try {
+				conditionMet = condition.call();
+			} catch (Exception e) {
+				System.out.println("Error occured");
+				e.printStackTrace();
+				conditionMet = true;
+			}
+		}
+	}
+
 	public void forward() {
 		leftMotor.startSynchronization();
 		leftMotor.backward();
