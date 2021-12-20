@@ -1,5 +1,8 @@
 package levelSolver;
 
+import drivingConditions.AndCondition;
+import drivingConditions.BumperCondition;
+import drivingConditions.TimeoutCondition;
 import e3base.Helper;
 import lejos.hardware.Button;
 import lejos.utility.Delay;
@@ -16,11 +19,7 @@ public class FullParcour implements ILevelSolver {
 		move.setSpeed(500);
 		move.setToMaxAcc();
 		Delay.msDelay(1000);
-		move.forwardUntil(new Callable<Boolean>() {
-			public Boolean call() {
-				return Button.ENTER.isDown();
-			}
-		});
+		move.forwardUntil(new AndCondition(new TimeoutCondition(5000), new BumperCondition()));
 	}
 
 	@Override

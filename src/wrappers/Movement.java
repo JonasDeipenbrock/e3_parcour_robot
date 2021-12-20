@@ -1,5 +1,6 @@
 package wrappers;
 
+import drivingConditions.IDrivingCondition;
 import e3base.Configuration;
 import lejos.hardware.Button;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
@@ -98,7 +99,7 @@ public class Movement {
 		}
 	}
 
-	public void forwardUntil(Callable<Boolean> condition) {
+	public void forwardUntil(IDrivingCondition condition) {
 		float scaleFactor = 5f;
 		//get tacho count
 		int[] tacho = getTachoCount();
@@ -108,7 +109,7 @@ public class Movement {
 		rightMotor.setSpeed(startSpeed);
 		forward();
 		boolean conditionMet = false;
-		while(!conditionMet) {
+		while(!conditionMet && Button.ENTER.isUp()) {
 			try {
 				conditionMet = condition.call();
 			} catch (Exception e) {
