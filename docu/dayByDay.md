@@ -69,3 +69,10 @@ Simplified Color detection by using colorid
 Implemented Zic-Zac find Crosses
 Further fine tuned find and push
 Added bumper to roboter
+
+# 20.12.2013
+
+Implemented auto correcting foreward method
+Implemented condition system instead of check loops
+Added new Bridge Crosssing algorithm
+Added circumnavigate box in line following
