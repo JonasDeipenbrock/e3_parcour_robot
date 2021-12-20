@@ -3,6 +3,7 @@ package levelSolver;
 import drivingConditions.ComparisonMethod;
 import drivingConditions.UltrasonicCondition;
 import lejos.hardware.Button;
+import lejos.utility.Delay;
 import wrappers.Movement;
 import wrappers.UltrasonicSensor;
 
@@ -20,6 +21,8 @@ public class BridgeCrossing implements ILevelSolver {
 	public void run() {
 //		do {
 			System.out.println("Starting bridge crossing");
+
+			movement.moveByDistance(15);
 			rightCurveAlgo();
 			//toCorner();
 			//toCorner();
@@ -42,7 +45,13 @@ public class BridgeCrossing implements ILevelSolver {
 			movement.forward();
 			movement.waitUntil(new UltrasonicCondition(ComparisonMethod.GREATER, 0.07f));
 			movement.stop();
-			System.out.println("Detected edge");
+			System.out.println(usSensor.getDistance());
+			if (usSensor.getDistance() >= 1000) {
+				System.out.println("Infinity");
+				break;
+			}
+			movement.moveByDistance(-5);
+			movement.setSpeed(400f);
 			movement.turnLeft();
 			movement.waitUntil(new UltrasonicCondition(ComparisonMethod.LESS, 0.06f));
 			movement.stop();
