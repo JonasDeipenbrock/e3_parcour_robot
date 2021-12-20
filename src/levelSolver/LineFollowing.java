@@ -151,9 +151,17 @@ public class LineFollowing implements ILevelSolver {
 	
 	/**
 	 * Drives around a fixes object in its path
+	 * TODO Find the line again
 	 */
 	void bypass() {
-		
+		move.moveByDistance(-7);
+		move.turnLeft90();
+		move.moveByDistance(17);
+		move.turnRight90();
+		move.moveByDistance(38);
+		move.turn(-65);
+		move.moveByDistance(20);
+		//has to Refind Line
 	}
 
 	@Override
