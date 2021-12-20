@@ -14,7 +14,6 @@ public class FullParcour implements ILevelSolver {
 		Movement move = Movement.getInstance();
 		move.setSpeed(500);
 		move.setToMaxAcc();
-		Delay.msDelay(1000);
 		move.forwardUntil(new OrCondition(new TimeoutCondition(5000), new BumperCondition()));
 	}
 

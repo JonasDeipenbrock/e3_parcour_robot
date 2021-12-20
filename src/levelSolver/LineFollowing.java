@@ -33,8 +33,7 @@ public class LineFollowing implements ILevelSolver {
 		int iteration = 1;
 		int generations = 50;
 		float[] buffer = new float[generations];
-		
-		Delay.msDelay(1000);
+
 		move.forward();
 		while(helper.checkLoop(true, false)) {
 			float currentError = calculateError();

@@ -24,7 +24,6 @@ public class Base {
 			// Draws the basic menu and wait for the user to select a value
 			String[] items = Algorithms.getNames();
 			StartMenu startMenu = new StartMenu();
-			Delay.msDelay(1000);
 			startMenu.drawMenu(items);
 			int selectedMode = startMenu.selectMenuElement();
 			if(selectedMode == -1) {

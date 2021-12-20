@@ -2,6 +2,7 @@ package menu;
 
 import lejos.hardware.ev3.LocalEV3;
 import lejos.hardware.lcd.GraphicsLCD;
+import lejos.utility.Delay;
 import lejos.utility.TextMenu;
 
 public class StartMenu implements IMenu {
@@ -28,6 +29,7 @@ public class StartMenu implements IMenu {
 			return -1;
 		}
 		int selection = menu.select();
+		Delay.msDelay(250);
 		return selection;
 	}
 	
