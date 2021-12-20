@@ -1,5 +1,7 @@
 package levelSolver;
 
+import drivingConditions.ComparisonMethod;
+import drivingConditions.UltrasonicCondition;
 import e3base.Base;
 import lejos.robotics.navigation.DifferentialPilot;
 import lejos.robotics.navigation.Move;
@@ -41,18 +43,8 @@ public class BridgeCrossing implements ILevelSolver {
 	void toCorner() {
 		float distanceDown = 0.01f;
 		movement.setSpeed(200f);
-		//start driving
-		movement.forward();
-		//as long as sensor distance < 0.18 drive;
-		Delay.msDelay(3000);
-		while(distanceDown < 0.18) {
-			//detection doesnt work yet
-//			if(distanceDown > 0.04) {
-//				movement.setSpeed(150f, 1f);
-//			}
-			distanceDown = usSensor.getDistance();
-		}
-		movement.stop();
+		//start driving as long as sensor distance < 0.18
+		movement.forwardUntil(new UltrasonicCondition(ComparisonMethod.GREATER, 0.18f));
 		movement.moveByDistance(-5);
 		movement.turnLeft90();
 		System.out.println(distanceDown);

@@ -4,15 +4,15 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 
-public class AndCondition implements IDrivingCondition {
+public class OrCondition implements IDrivingCondition {
 
     Collection<IDrivingCondition> conditions;
 
-    public AndCondition(Collection<IDrivingCondition> conditions) {
+    public OrCondition(Collection<IDrivingCondition> conditions) {
         this.conditions = conditions;
     }
 
-    public AndCondition(IDrivingCondition... conditions) {
+    public OrCondition(IDrivingCondition... conditions) {
         this.conditions = Arrays.asList(conditions);
     }
 
