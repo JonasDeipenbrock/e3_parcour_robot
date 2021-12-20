@@ -2,11 +2,7 @@ package levelSolver;
 
 import drivingConditions.ComparisonMethod;
 import drivingConditions.UltrasonicCondition;
-import e3base.Base;
 import lejos.hardware.Button;
-import lejos.robotics.navigation.DifferentialPilot;
-import lejos.robotics.navigation.Move;
-import lejos.utility.Delay;
 import wrappers.Movement;
 import wrappers.UltrasonicSensor;
 
@@ -47,7 +43,10 @@ public class BridgeCrossing implements ILevelSolver {
 			movement.waitUntil(new UltrasonicCondition(ComparisonMethod.GREATER, 0.07f));
 			movement.stop();
 			System.out.println("Detected edge");
-			movement.turn(-30);
+			movement.turnLeft();
+			movement.waitUntil(new UltrasonicCondition(ComparisonMethod.LESS, 0.06f));
+			movement.stop();
+			movement.turn(30);
 		}
 	}
 	

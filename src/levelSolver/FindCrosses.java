@@ -38,7 +38,7 @@ public class FindCrosses implements ILevelSolver {
 //			passOnceRight();
 //		}
 		normalClearing();
-		movement.stop();
+		movement.stopCorrected();
 		audio.systemSound(2);
 	}
 	
@@ -51,7 +51,7 @@ public class FindCrosses implements ILevelSolver {
 		Random rand = new Random();
 		movement.moveByDistance(15);
 		while(helper.checkLoop(false, false) && (whiteMissing || redMissing)) {
-			movement.stop();
+			movement.stopCorrected();
 			movement.moveByDistance(-5);
 			int newAngle = rand.nextInt(90) + 45;
 			movement.turn(newAngle);
@@ -77,7 +77,7 @@ public class FindCrosses implements ILevelSolver {
 			}
 			
 		}
-		movement.stop();
+		movement.stopCorrected();
 		audio.systemSound(2);
 	}
 	
@@ -92,7 +92,7 @@ public class FindCrosses implements ILevelSolver {
 				return;
 			}
 		}
-		movement.stop();
+		movement.stopCorrected();
 		movement.moveByDistance(-5);
 		movement.turnLeft90();
 		while(true) {
@@ -116,7 +116,7 @@ public class FindCrosses implements ILevelSolver {
 				return true;
 			}
 		}
-		movement.stop();
+		movement.stopCorrected();
 		movement.moveByDistance(-5);
 		if(checkColorCondition()) {
 			return true;
@@ -144,7 +144,7 @@ public class FindCrosses implements ILevelSolver {
 				return true;
 			}
 		}
-		movement.stop();
+		movement.stopCorrected();
 		movement.moveByDistance(-5);
 		if(checkColorCondition()) {
 			return true;

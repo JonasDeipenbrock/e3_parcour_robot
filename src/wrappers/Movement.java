@@ -5,9 +5,6 @@ import e3base.Configuration;
 import lejos.hardware.Button;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.robotics.navigation.DifferentialPilot;
-import lejos.utility.Delay;
-
-import java.util.concurrent.Callable;
 
 public class Movement {
 
@@ -126,7 +123,7 @@ public class Movement {
 			leftMotor.endSynchronization();
 			forward();
 		}
-		stop();
+		stopCorrected();
 		leftMotor.setSpeed(startSpeed);
 		rightMotor.setSpeed(startSpeed);
 	}
@@ -158,7 +155,7 @@ public class Movement {
 		leftMotor.endSynchronization();
 	}
 	
-	public void stop() {
+	public void stopCorrected() {
 		int[] startTacho = getTachoCount();
 		leftMotor.startSynchronization();
 		leftMotor.stop(false);
@@ -176,13 +173,22 @@ public class Movement {
 			leftMotor.rotate(-difference);
 		}
 	}
+
+	public void stop() {
+		leftMotor.startSynchronization();
+		leftMotor.stop(false);
+		rightMotor.stop(false);
+		leftMotor.endSynchronization();
+	}
 	
 	public void turnLeft() {
 		rightMotor.backward();
+		leftMotor.forward();
 	}
 	
 	public void turnRight() {
 		leftMotor.backward();
+		rightMotor.forward();
 	}
 
 	public void turn(double angle) {

@@ -3,7 +3,6 @@ package levelSolver;
 import e3base.Base;
 import e3base.Helper;
 import e3base.TachoTimeout;
-import lejos.utility.Delay;
 import wrappers.BumperSensor;
 import wrappers.ColorSensor;
 import wrappers.Movement;
@@ -65,7 +64,7 @@ public class LineFollowing implements ILevelSolver {
 			//Delay.msDelay(50);
 		}
 		System.out.println("Line following ended");
-		move.stop();
+		move.stopCorrected();
 	}
 	
 	float calculateError() {
@@ -104,7 +103,7 @@ public class LineFollowing implements ILevelSolver {
 	 * Also this method is blocking due to the inner while loop and cant break on collision
 	 */
 	boolean refind() {
-		move.stop();
+		move.stopCorrected();
 		final int[] start_tachos = move.getTachoCount();
 		//move.turnLeft90();
 		move.turnLeft();
@@ -115,7 +114,7 @@ public class LineFollowing implements ILevelSolver {
 				return true;
 			}
 			if(turnRobotTask(start_tachos[1], degree)) {
-				move.stop();
+				move.stopCorrected();
 				Base.endProgram();
 				System.exit(1);
 				return false;

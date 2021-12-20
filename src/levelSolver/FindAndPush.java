@@ -72,7 +72,7 @@ public class FindAndPush implements ILevelSolver {
 		}
 //		//move a bit further -> in front of box
 		Delay.msDelay(480);
-		movement.stop();
+		movement.stopCorrected();
 		movement.turnRight90();
 		System.out.println("Pushing the box");
 		
@@ -105,7 +105,7 @@ public class FindAndPush implements ILevelSolver {
 			
 		}
 		Delay.msDelay(500);
-		movement.stop();
+		movement.stopCorrected();
 		System.out.println("At wall");
 		
 		//Move around box by one side
@@ -134,7 +134,7 @@ public class FindAndPush implements ILevelSolver {
 				break;
 			}
 		}
-		movement.stop();
+		movement.stopCorrected();
 	
 		//Drive to exit
 		movement.moveByDistance(-10);
@@ -157,7 +157,7 @@ public class FindAndPush implements ILevelSolver {
 			movement.setMotorRotation(offset, 500f);
 			movement.forward();
 		}
-		movement.stop();
+		movement.stopCorrected();
 		ind.setLED(LEDPattern.LED_RED);
 	}
 
