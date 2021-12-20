@@ -13,7 +13,9 @@ public class FullParcour implements ILevelSolver {
 	public void run() {
 		// TODO Auto-generated method stub
 		Movement move = Movement.getInstance();
-		move.setToMaxSpeed();
+		move.setSpeed(500);
+		move.setToMaxAcc();
+		Delay.msDelay(1000);
 		move.forwardUntil(new Callable<Boolean>() {
 			public Boolean call() {
 				return Button.ENTER.isDown();

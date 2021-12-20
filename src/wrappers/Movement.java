@@ -99,12 +99,13 @@ public class Movement {
 	}
 
 	public void forwardUntil(Callable<Boolean> condition) {
-		float scaleFactor = 0.2f;
+		float scaleFactor = 5f;
 		//get tacho count
 		int[] tacho = getTachoCount();
-
 		int startSpeed = leftMotor.getSpeed();
-		rightMotor.setSpeed(leftMotor.getSpeed());
+		leftMotor.setSpeed(startSpeed );
+		
+		rightMotor.setSpeed(startSpeed);
 		forward();
 		boolean conditionMet = false;
 		while(!conditionMet) {
@@ -119,9 +120,10 @@ public class Movement {
 			int[] currentTacho = getTachoCount();
 			int difference = (tacho[0] - currentTacho[0]) - (tacho[1] - currentTacho[1]);
 			leftMotor.startSynchronization();
-			leftMotor.setSpeed(startSpeed + difference*scaleFactor);
-			rightMotor.setSpeed(startSpeed - difference*scaleFactor);
+			leftMotor.setSpeed(startSpeed - difference*scaleFactor);
+			rightMotor.setSpeed(startSpeed + difference*scaleFactor);
 			leftMotor.endSynchronization();
+			forward();
 		}
 		stop();
 		leftMotor.setSpeed(startSpeed);
