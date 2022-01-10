@@ -63,6 +63,7 @@ public class BridgeCrossing implements ILevelSolver {
 			movement.setSpeed(400f);
 			movement.turnLeft();
 			status = movement.waitUntil(turnCond);
+			movement.stop();
 			if (status == 2) {
 				System.out.println("Detected Blue Strip");
 				return ExitCode.SUCCESSFULL;
@@ -75,7 +76,6 @@ public class BridgeCrossing implements ILevelSolver {
 				return ExitCode.USER_INTERRUPT;
 			}
 
-			movement.stop();
 			movement.turn(30);
 		}
 	}
