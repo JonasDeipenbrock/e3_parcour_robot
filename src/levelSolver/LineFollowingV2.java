@@ -3,6 +3,7 @@ package levelSolver;
 import lejos.hardware.Button;
 import wrappers.BumperSensor;
 import wrappers.ColorSensor;
+import wrappers.ExitCode;
 import wrappers.Movement;
 
 public class LineFollowingV2 implements ILevelSolver {
@@ -21,7 +22,7 @@ public class LineFollowingV2 implements ILevelSolver {
 	float[] buffer = new float[GENERATIONS];
 	
 	@Override
-	public void run() {
+	public ExitCode run() {
 		move = Movement.getInstance();
 		bumper = BumperSensor.getInstance();
 		sensor = ColorSensor.getInstance();
@@ -39,23 +40,24 @@ public class LineFollowingV2 implements ILevelSolver {
 		
 		//start driving forward
 		while(true) {
-			int exitCode = followLine();
+			ExitCode exitCode = followLine();
 			switch (exitCode) {
-				case 0:
+				case SUCCESSFULL:
 					System.out.println("Finished line following");
 					move.stop();
-					return;
-				case 3:
+					return ExitCode.SUCCESSFULL;
+				case LINE_LOSS_INTERRUPT:
 					refindLine();
 					break;
-				case 2:
+				case BUMPER_INTERRUPT:
 					avoidBox();
 					break;
-				case 1:
+				case USER_INTERRUPT:
 					System.out.println("User interrupt");
 					move.stop();
-					return;
+					return ExitCode.USER_INTERRUPT;
 			}
+			return ExitCode.SUCCESSFULL;
 		}
 		
 		
@@ -63,18 +65,18 @@ public class LineFollowingV2 implements ILevelSolver {
 
 	}
 	
-	int followLine() {
+	ExitCode followLine() {
 		int error = 0;
 		//! Error not in while but total error!
 		while(true) {
 			//if bumped => return 2
-			if(bumper.anyBumbed()) return 2;
+			if(bumper.anyBumbed()) return ExitCode.BUMPER_INTERRUPT;
 			
 			//if blue line => return 0
 			//TODO add blue line
 			
 			//if button pressed => return 1
-			if(Button.ESCAPE.isDown()) return 3;
+			if(Button.ESCAPE.isDown()) return ExitCode.USER_INTERRUPT;
 			
 			//if total loss too big => return 3
 			

@@ -5,6 +5,7 @@ import e3base.Helper;
 import e3base.TachoTimeout;
 import wrappers.BumperSensor;
 import wrappers.ColorSensor;
+import wrappers.ExitCode;
 import wrappers.Movement;
 
 public class LineFollowing implements ILevelSolver {
@@ -28,7 +29,7 @@ public class LineFollowing implements ILevelSolver {
 	
 	
 	@Override
-	public void run() {
+	public ExitCode run() {
 		int iteration = 1;
 		int generations = 50;
 		float[] buffer = new float[generations];
@@ -65,6 +66,7 @@ public class LineFollowing implements ILevelSolver {
 		}
 		System.out.println("Line following ended");
 		move.stopCorrected();
+		return ExitCode.SUCCESSFULL;
 	}
 	
 	float calculateError() {

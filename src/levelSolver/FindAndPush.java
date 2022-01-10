@@ -3,6 +3,7 @@ package levelSolver;
 import e3base.Helper;
 import lejos.utility.Delay;
 import wrappers.ColorSensor;
+import wrappers.ExitCode;
 import wrappers.LEDPattern;
 import wrappers.Movement;
 import wrappers.StatusIndicator;
@@ -11,7 +12,7 @@ import wrappers.UltrasonicSensor;
 public class FindAndPush implements ILevelSolver {
 
 	@Override
-	public void run() {
+	public ExitCode run() {
 		Movement movement = Movement.getInstance();
 		UltrasonicSensor uSensor = UltrasonicSensor.getInstance();
 		ColorSensor colorSensor = ColorSensor.getInstance();
@@ -159,5 +160,6 @@ public class FindAndPush implements ILevelSolver {
 		}
 		movement.stopCorrected();
 		ind.setLED(LEDPattern.LED_RED);
+		return ExitCode.SUCCESSFULL;
 	}
 }

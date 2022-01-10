@@ -3,7 +3,7 @@ package levelSolver;
 import drivingConditions.ComparisonMethod;
 import drivingConditions.UltrasonicCondition;
 import lejos.hardware.Button;
-import lejos.utility.Delay;
+import wrappers.ExitCode;
 import wrappers.Movement;
 import wrappers.UltrasonicSensor;
 
@@ -18,7 +18,7 @@ public class BridgeCrossing implements ILevelSolver {
 	}
 
 	@Override
-	public void run() {
+	public ExitCode run() {
 			System.out.println("Starting bridge crossing");
 
 			//drive right curve and correct when ip sensor sees ravine
@@ -40,5 +40,6 @@ public class BridgeCrossing implements ILevelSolver {
 				movement.stop();
 				movement.turn(30);
 			}
+			return ExitCode.SUCCESSFULL;
 	}
 }

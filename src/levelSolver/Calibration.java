@@ -2,6 +2,7 @@ package levelSolver;
 
 import lejos.hardware.Button;
 import wrappers.ColorSensor;
+import wrappers.ExitCode;
 
 public class Calibration implements ILevelSolver {
 	
@@ -12,8 +13,9 @@ public class Calibration implements ILevelSolver {
 	}
 
 	@Override
-	public void run() {
+	public ExitCode run() {
 		init();
+		return ExitCode.SUCCESSFULL;
 	}
 	
 	public void init() {

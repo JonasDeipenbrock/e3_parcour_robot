@@ -6,6 +6,7 @@ import e3base.Helper;
 import lejos.hardware.Audio;
 import lejos.hardware.ev3.LocalEV3;
 import wrappers.ColorSensor;
+import wrappers.ExitCode;
 import wrappers.Movement;
 import lejos.robotics.Color;
 
@@ -20,7 +21,7 @@ public class FindCrosses implements ILevelSolver {
 	boolean redMissing = true;
 	
 	@Override
-	public void run() {
+	public ExitCode run() {
 		movement = Movement.getInstance();
 		helper = Helper.getInstance();
 		color = ColorSensor.getInstance();
@@ -40,6 +41,7 @@ public class FindCrosses implements ILevelSolver {
 		normalClearing();
 		movement.stopCorrected();
 		audio.systemSound(2);
+		return ExitCode.SUCCESSFULL;
 	}
 	
 	//	0 = red
