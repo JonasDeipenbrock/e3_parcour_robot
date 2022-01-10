@@ -66,7 +66,7 @@ public class LineFollowingV2 implements ILevelSolver {
 	}
 	
 	ExitCode followLine() {
-		int error = 0;
+		float error = 0f;
 		//! Error not in while but total error!
 		while(true) {
 			//if bumped => return 2
@@ -74,6 +74,7 @@ public class LineFollowingV2 implements ILevelSolver {
 			
 			//if blue line => return 0
 			//TODO add blue line
+			//if(sensor.checkBlue()) return ExitCode.SUCCESSFULL;
 			
 			//if button pressed => return 1
 			if(Button.ESCAPE.isDown()) return ExitCode.USER_INTERRUPT;
@@ -81,8 +82,12 @@ public class LineFollowingV2 implements ILevelSolver {
 			//if total loss too big => return 3
 			
 			//measure loss and adjust for it
+			if(calculateError()) {
+				error = getBufferedError();
+				move.setMotorRotation(error, 150f);
+				System.out.println(error);
+			}
 			
-			move.setMotorRotation(error, 150f);
 			//summ total loss
 			
 			//reset total loss if still on line
@@ -92,6 +97,7 @@ public class LineFollowingV2 implements ILevelSolver {
 		
 	}
 	
+
 	void refindLine() {
 		System.out.println("Refinding line");
 	}
@@ -107,16 +113,35 @@ public class LineFollowingV2 implements ILevelSolver {
 		move.moveByDistance(20);
 	}
 	
-	float calculateError() {
+	/**
+	 * Calculates the error and check if on new generation
+	 * @return
+	 */
+	private boolean calculateError() {
 		//get grey value and calculate error
 		float value = sensor.getGreyScale();
 		float error = (sensor.getBorderValue() - value) * ERROR_FACTOR;
+		//System.out.println(error);
+		//fill buffer
+		int rest = iteration % GENERATIONS;
+		buffer[rest] = error;
 		
 		if(value > 0.08) {
 			//TODO reset total error
 			
 			//tTimeout.resetCounter();
 		}
-		return error;
+		iteration++;
+		if(rest == 0) return true;
+		return false;
+	}
+	
+	private float getBufferedError() {
+		float errorSum = 0;
+		for (float err: buffer) {
+			errorSum += err;
+		}
+		float medianError = errorSum / GENERATIONS;
+		return medianError;
 	}
 }

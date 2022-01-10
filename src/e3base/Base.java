@@ -34,6 +34,8 @@ public class Base {
 			try {
 				ILevelSolver executingAlgo = value.getLevelSolver().newInstance();
 				executingAlgo.run();
+				System.out.println("Finished part");
+				Delay.msDelay(10000);
 			} catch (InstantiationException | IllegalAccessException e) {
 				e.printStackTrace();
 				System.exit(1);
