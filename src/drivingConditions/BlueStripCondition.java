@@ -10,7 +10,7 @@ public class BlueStripCondition implements IDrivingCondition{
     }
 
     @Override
-    public Boolean call() throws Exception {
-        return colorSensor.checkBlue();
+    public Integer call() throws Exception {
+        return colorSensor.checkBlue() ? 1 : 0;
     }
 }

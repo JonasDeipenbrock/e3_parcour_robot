@@ -17,15 +17,15 @@ public class UltrasonicCondition implements IDrivingCondition {
     }
 
     @Override
-    public Boolean call() throws Exception {
+    public Integer call() throws Exception {
         float distance = ultrasonicSensor.getDistance();
         switch (this.comp) {
             case LESS:
-                return distance <= threshold;
+                return distance <= threshold ? 1 : 0;
             case GREATER:
-                return distance >= threshold;
+                return distance >= threshold ? 1 : 0;
             default:
-                return false;
+                return 0;
         }
     }
 }

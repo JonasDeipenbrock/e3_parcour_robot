@@ -11,7 +11,7 @@ public class BumperCondition implements IDrivingCondition {
     }
 
     @Override
-    public Boolean call() throws Exception {
-        return bumper.anyBumbed();
+    public Integer call() throws Exception {
+        return bumper.anyBumbed() ? 1 : 0;
     }
 }

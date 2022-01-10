@@ -108,7 +108,7 @@ public class Movement {
 		boolean conditionMet = false;
 		while(!conditionMet && Button.ENTER.isUp()) {
 			try {
-				conditionMet = condition.call();
+				conditionMet = condition.call() != 0;
 			} catch (Exception e) {
 				System.out.println("Error occured");
 				e.printStackTrace();
@@ -128,17 +128,18 @@ public class Movement {
 		rightMotor.setSpeed(startSpeed);
 	}
 
-	public void waitUntil(IDrivingCondition condition) {
-		boolean conditionMet = false;
-		while(!conditionMet && Button.ENTER.isUp()) {
+	public int waitUntil(IDrivingCondition condition) {
+		int statusCode = 0;
+		while(statusCode == 0 && Button.ENTER.isUp()) {
 			try {
-				conditionMet = condition.call();
+				statusCode = condition.call();
 			} catch (Exception e) {
 				System.out.println("Error occured");
 				e.printStackTrace();
-				conditionMet = true;
+				statusCode = 1;
 			}
 		}
+		return statusCode;
 	}
 
 	public void forward() {

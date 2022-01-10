@@ -11,8 +11,8 @@ public class TimeoutCondition implements IDrivingCondition {
     }
 
     @Override
-    public Boolean call() throws Exception {
+    public Integer call() throws Exception {
         long timeSinceStart = System.currentTimeMillis() - startTime;
-        return timeSinceStart >= timeout;
+        return timeSinceStart >= timeout ? 1 : 0;
     }
 }

@@ -17,14 +17,16 @@ public class OrCondition implements IDrivingCondition {
     }
 
     @Override
-    public Boolean call() throws Exception {
+    public Integer call() throws Exception {
         Iterator<IDrivingCondition> condIterator = conditions.iterator();
+        int i = 1;
         while (condIterator.hasNext()) {
-            boolean subResult = condIterator.next().call();
-            if (subResult) {
-                return true;
+            Integer subResult = condIterator.next().call();
+            if (subResult != 0) {
+                return i;
             };
+            i++;
         }
-        return false;
+        return 0;
     }
 }
