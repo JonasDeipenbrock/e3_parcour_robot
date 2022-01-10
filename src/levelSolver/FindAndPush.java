@@ -160,12 +160,4 @@ public class FindAndPush implements ILevelSolver {
 		movement.stopCorrected();
 		ind.setLED(LEDPattern.LED_RED);
 	}
-
-	@Override
-
-	public void interrupt() {
-		// TODO Auto-generated method stub
-
-	}
-
 }

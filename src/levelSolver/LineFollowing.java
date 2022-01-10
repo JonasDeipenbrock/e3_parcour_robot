@@ -161,11 +161,4 @@ public class LineFollowing implements ILevelSolver {
 		move.moveByDistance(20);
 		//has to Refind Line
 	}
-
-	@Override
-	public void interrupt() {
-		// TODO Auto-generated method stub
-
-	}
-
 }

@@ -31,10 +31,4 @@ public class Calibration implements ILevelSolver {
 		colorSensor.blackValue = dataBlack;
 		colorSensor.whiteValue = dataWhite;
 	}
-
-	@Override
-	public void interrupt() {
-
-	}
-
 }

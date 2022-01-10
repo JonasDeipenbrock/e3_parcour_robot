@@ -188,12 +188,6 @@ public class FindCrosses implements ILevelSolver {
 		return !(whiteMissing || redMissing);
 	}
 
-	@Override
-	public void interrupt() {
-		// TODO Auto-generated method stub
-
-	}
-
 	
 	/**
 	 * 1. Find crosses: 

@@ -16,11 +16,4 @@ public class FullParcour implements ILevelSolver {
 		move.setToMaxAcc();
 		move.forwardUntil(new OrCondition(new TimeoutCondition(5000), new BumperCondition()));
 	}
-
-	@Override
-	public void interrupt() {
-		// TODO Auto-generated method stub
-
-	}
-
 }

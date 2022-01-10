@@ -117,11 +117,4 @@ public class LineFollowingV2 implements ILevelSolver {
 		}
 		return error;
 	}
-
-	@Override
-	public void interrupt() {
-		// TODO Auto-generated method stub
-
-	}
-
 }
