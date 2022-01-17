@@ -19,23 +19,25 @@ public class BridgeCrossing implements ILevelSolver {
 	@Override
 	public ExitCode run() {
 		System.out.println("Starting bridge crossing");
+		movement.setToMaxAcc();
+		movement.setToMaxSpeed();
 
 		IDrivingCondition forwardCond = new OrCondition(
 				new UltrasonicCondition(ComparisonMethod.GREATER, 0.07f),
-				new BlueStripCondition(),
+				new BlueStripCondition(10),
 				new BumperCondition(),
 				new ButtonCondition());
 
 		IDrivingCondition turnCond = new OrCondition(
 				new UltrasonicCondition(ComparisonMethod.LESS, 0.06f),
-				new BlueStripCondition(),
+				new BlueStripCondition(10),
 				new BumperCondition(),
 				new ButtonCondition());
 
-		movement.moveByDistance(15);
+		movement.moveByDistance(25);
 		while (true) {
 			//drive forward in slight arc
-			movement.setMotorRotation(50, 300);
+			movement.setMotorRotation(60f, 400f);
 			movement.forward();
 			int status = movement.waitUntil(forwardCond);
 			movement.stop();
@@ -59,8 +61,8 @@ public class BridgeCrossing implements ILevelSolver {
 			}
 
 			//drive back and turn left
-			movement.moveByDistance(-5);
 			movement.setSpeed(400f);
+			movement.moveByDistance(-3); //original -5
 			movement.turnLeft();
 			status = movement.waitUntil(turnCond);
 			movement.stop();
@@ -76,15 +78,24 @@ public class BridgeCrossing implements ILevelSolver {
 				return ExitCode.USER_INTERRUPT;
 			}
 
-			movement.turn(30);
+			movement.turn(30); //original 30
 		}
 	}
 
-	private void handleStatus() {
-
-	}
-
 	private void bumperNavigate() {
-		//TODO: find entrance code
+		movement.moveByDistance(-5);
+		movement.turn(30);
+		movement.forward();
+		int status = movement.waitUntil(new OrCondition(new BlueStripCondition(10),
+				                           new ButtonCondition(),
+				                           new TimeoutCondition(1000),
+				                           new BumperCondition()));
+		movement.stop();
+		// second time bumper hit
+		if (status == 4) {
+			movement.moveByDistance(-5);
+			movement.turn(-25);
+			movement.moveByDistance(6);
+		}
 	}
 }
