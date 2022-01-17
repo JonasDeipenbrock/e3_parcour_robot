@@ -1,5 +1,12 @@
 package levelSolver;
 
+import drivingConditions.BumperCondition;
+import drivingConditions.ButtonCondition;
+import drivingConditions.ComparisonMethod;
+import drivingConditions.LinesPassedCondition;
+import drivingConditions.OrCondition;
+import drivingConditions.TimeoutCondition;
+import drivingConditions.UltrasonicCondition;
 import e3base.Helper;
 import lejos.utility.Delay;
 import wrappers.ColorSensor;
@@ -7,6 +14,7 @@ import wrappers.ExitCode;
 import wrappers.LEDPattern;
 import wrappers.Movement;
 import wrappers.StatusIndicator;
+import wrappers.UltrasonicPosition;
 import wrappers.UltrasonicSensor;
 
 public class FindAndPush implements ILevelSolver {
@@ -18,97 +26,42 @@ public class FindAndPush implements ILevelSolver {
 		ColorSensor colorSensor = ColorSensor.getInstance();
 		Helper helper = Helper.getInstance();
 		StatusIndicator ind = StatusIndicator.getInstance();
+		UltrasonicPosition uPosition = UltrasonicPosition.getInstance()
 		
-		ind.setLED(LEDPattern.LED_GREEN_FLASH);
-		
-		
-		//move to right wall by turning 45 degree
-		//turn straight again
-		int iteration = 1;
-		int generations = 50;
-		float[] buffer = new float[generations];
-		// Move forward until distance goes above threshold
-		while (helper.checkLoop(false, false)) {
-			//we want to reach 0.25m to the right ideally
-			float distanceRight = uSensor.getDistance();
-			if(distanceRight > 0.35f) break;
-			float offset = (0.22f - distanceRight) * -1000;	//error is difference from ideal wall point
-			
-			int rest = iteration % generations;
-			buffer[rest] = offset;
-			
-			if(iteration % generations == 0) {			
-				float errorSum = 0;
-				for (float err: buffer) {
-					errorSum += err;
-				}
-				float medianError = errorSum / generations;
-				System.out.println(medianError);
-				movement.setMotorRotation(medianError, 500f);
-				movement.forward();
-			}
-			iteration++;
-			System.out.println(String.format("%f, offset: %f", distanceRight, offset));
-		}
-		// Move forward until distance goes above threshold
-//		while (helper.checkLoop(false)) {
-//			float distanceLeft = uSensor.getDistance();
-//			if(distanceLeft > 0.4f) break;
-//			//we want to reach 0.3m to the right ideally
-//			float offset = (0.28f - distanceLeft) * -1000;	//error is difference from ideal wall point
-//			movement.setMotorRotation(offset);
-//			movement.forward();
-//			System.out.println(String.format("%f, offset: %f", distanceLeft, offset));
-//		}
+		uPosition.moveUP();
+
 		ind.setLED(LEDPattern.LED_RED);
 		
-		movement.moveByDistance(10);
+		movement.turnLeft90();
+		movement.forwardUntil(new OrCondition(new BumperCondition(),
+											  new ButtonCondition()));
+		movement.moveByDistance(1);
+		movement.moveByDistance(-10);
+		movement.turnRight90();
+		movement.setToMaxSpeed();
+		movement.forwardUntil(new OrCondition(new UltrasonicCondition(ComparisonMethod.GREATER, 0.4f),
+											  new TimeoutCondition(2000)));
+		ind.setLED(LEDPattern.LED_ORANGE);
 		
 		System.out.println("Moving to box");
-		while(helper.checkLoop(false, false)) {
-			float distanceLeft = uSensor.getDistance();
-			if(distanceLeft < 0.4f) break;
-			movement.setToMaxSpeed();
-			movement.forward();
-		}
-//		//move a bit further -> in front of box
-		Delay.msDelay(480);
-		movement.stopCorrected();
+		movement.forwardUntil(new OrCondition(new UltrasonicCondition(ComparisonMethod.LESS, 0.4f),
+											  new ButtonCondition()));
+		
+        ind.setLED(LEDPattern.LED_ORANGE);
+ 		//move a bit further -> in front of box
+		movement.moveByDistance(10);
 		movement.turnRight90();
 		System.out.println("Pushing the box");
 		
+		ind.setLED(LEDPattern.LED_GREEN_FLASH);
 		// Move forward until Motors stop or push sensor -> Push box against wall
-		movement.forward();
-		long start = System.currentTimeMillis();
-		int lineCounter = 0;
-		while (true) {
-			if(!helper.checkLoop(false, false)) {
-				System.out.println("Notfall Aus");
-				break;
-			};
-			long current = System.currentTimeMillis();
-			if((current - start) > 4000) {
-				System.out.println("Met threshold");
-				break;
-			};
-			boolean onLine = colorSensor.checkWhite();
-			if(lineCounter == 0 && onLine) {
-				System.out.println("First line reached");
-				lineCounter++;
-			} else if (lineCounter == 1 && !onLine) {
-				System.out.println("First line passed");
-				lineCounter++;
-			} else if (lineCounter == 2 && onLine) {
-				System.out.println("Second line reached");
-				break;
-			}
-			System.out.println(String.format("%d, %b", lineCounter, onLine));
-			
-		}
-		Delay.msDelay(500);
-		movement.stopCorrected();
+		movement.forwardUntil(new OrCondition(new TimeoutCondition(4000),
+										      new LinesPassedCondition(2),
+											  new ButtonCondition()));
+		movement.moveByDistance(15);
 		System.out.println("At wall");
-		
+
+		ind.setLED(LEDPattern.LED_ORANGE_FLASH);
 		//Move around box by one side
 		movement.moveByDistance(-2);
 		movement.turnRight90();
@@ -118,37 +71,27 @@ public class FindAndPush implements ILevelSolver {
 		movement.turnLeft90();
 
 		//Move box in corner
-		movement.forward();
-		long timeout = System.currentTimeMillis();
-		while(true) {
-			if(!helper.checkLoop(false, false)) {
-				System.out.println("Not-Aus");
-				break;
-			}
-			long current = System.currentTimeMillis();
-			if((current - timeout) > 3000) {
-				System.out.println("Met threshold");
-				break;
-			};
-			if(colorSensor.checkWhite()) {
-				System.out.println("In the corner");
-				break;
-			}
-		}
-		movement.stopCorrected();
-	
+		movement.forwardUntil(new OrCondition(new TimeoutCondition(3000),
+											  new LinesPassedCondition(1),
+											  new ButtonCondition()));
+
+		ind.setLED(LEDPattern.LED_RED_FLASH);
 		//Drive to exit
 		movement.moveByDistance(-10);
 		movement.turnLeft90();
-		movement.forward();
-		while(true) {
-			if(!helper.checkLoop(false, false)) break;
-			if(colorSensor.checkWhite()) break;
-		}
+
+		//shortly move backwards to ensure alignment
+		movement.backward();
+		Delay.msDelay(100);
+		movement.stop();
+
+		movement.forwardUntil(new OrCondition(new LinesPassedCondition(1),
+											  new ButtonCondition()));
+
 		movement.turnLeft90();
-		
-		//TODO ausrichtung an wand -> 50cm ideal
-		
+		ind.setLED(LEDPattern.LED_GREEN);
+
+		//ausrichtung an wand -> 50cm ideal
 		movement.forward();
 		while (!colorSensor.checkBlue()) {	//stop on blue line
 			if (!helper.checkLoop(false, false)) break;
