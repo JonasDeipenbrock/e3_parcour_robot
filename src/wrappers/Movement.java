@@ -67,6 +67,17 @@ public class Movement {
 	 */
 	public void setMotorRotation(float offSet, float baseSpeed) {
 		//float baseSpeed = 150f;
+		/**
+		 * Werte zwischen 300 und -300
+		 * BasisSpeed von 150
+		 * 
+		 * LeftSpeed = 150 + 300 => 450
+		 * RightSpeed = 150 - 300 = -150
+		 * 
+		 * 
+		 * l = 150
+		 * r = -150
+		 */
 		float leftSpeed = baseSpeed + offSet;
 		float rightSpeed = baseSpeed - offSet;
 		
@@ -83,6 +94,48 @@ public class Movement {
 			leftMotor.startSynchronization();
 			rightMotor.setSpeed(rightSpeed);
 			leftMotor.setSpeed(leftSpeed);
+			rightMotor.forward();
+			leftMotor.backward();
+			leftMotor.endSynchronization();
+		} else {
+			leftMotor.startSynchronization();
+			rightMotor.setSpeed(rightSpeed);
+			leftMotor.setSpeed(leftSpeed);
+			rightMotor.backward();
+			leftMotor.backward();
+			leftMotor.endSynchronization();
+		}
+	}
+	
+	/**
+	 * Set the motor turn speed with offset
+	 * default turn speed is -20
+	 * @param offSet
+	 */
+	public void setMotorRotationZeroed(float offSet, float baseSpeed) {
+		//float baseSpeed = 150f;
+		/**
+		 * Werte zwischen 300 und -300
+		 * BasisSpeed von 150
+		 * 
+		 * LeftSpeed = 150 + 300 => 450
+		 * RightSpeed = 150 - 300 = -150
+		 * 
+		 */
+		float leftSpeed = baseSpeed + offSet;
+		float rightSpeed = baseSpeed - offSet;
+		
+		if(leftSpeed < 0) {
+			leftMotor.startSynchronization();
+			leftMotor.setSpeed(0);
+			rightMotor.setSpeed(1.2f * rightSpeed);
+			leftMotor.forward();
+			rightMotor.backward();
+			leftMotor.endSynchronization();
+		} else if(rightSpeed < 0) {
+			leftMotor.startSynchronization();
+			rightMotor.setSpeed(0);
+			leftMotor.setSpeed(1.2f * leftSpeed);
 			rightMotor.forward();
 			leftMotor.backward();
 			leftMotor.endSynchronization();

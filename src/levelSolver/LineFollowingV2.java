@@ -1,6 +1,7 @@
 package levelSolver;
 
 import lejos.hardware.Button;
+import lejos.utility.Delay;
 import wrappers.BumperSensor;
 import wrappers.ColorSensor;
 import wrappers.ExitCode;
@@ -8,7 +9,9 @@ import wrappers.Movement;
 
 public class LineFollowingV2 implements ILevelSolver {
 
-	final float ERROR_FACTOR = 4000;
+	boolean afterBoxFlag = false;
+	
+	final float ERROR_FACTOR = 2000;	//4000
 	Movement move;
 	BumperSensor bumper;
 	ColorSensor sensor;
@@ -51,13 +54,13 @@ public class LineFollowingV2 implements ILevelSolver {
 					break;
 				case BUMPER_INTERRUPT:
 					avoidBox();
+					afterBoxFlag = true;
 					break;
 				case USER_INTERRUPT:
 					System.out.println("User interrupt");
 					move.stop();
 					return ExitCode.USER_INTERRUPT;
 			}
-			return ExitCode.SUCCESSFULL;
 		}
 		
 		
@@ -69,6 +72,7 @@ public class LineFollowingV2 implements ILevelSolver {
 		float error = 0f;
 		//! Error not in while but total error!
 		while(true) {
+			Delay.msDelay(100);
 			//if bumped => return 2
 			if(bumper.anyBumbed()) return ExitCode.BUMPER_INTERRUPT;
 			
@@ -80,26 +84,74 @@ public class LineFollowingV2 implements ILevelSolver {
 			if(Button.ESCAPE.isDown()) return ExitCode.USER_INTERRUPT;
 			
 			//if total loss too big => return 3
-			
-			//measure loss and adjust for it
-			if(calculateError()) {
-				error = getBufferedError();
-				move.setMotorRotation(error, 150f);
-				System.out.println(error);
+			if(totalLoss > 100) {
+				//System.out.println(String.format("Total error reached %f", totalLoss));
 			}
+			float newError = scaleToRange(calculateErrorDouble());
+			System.out.println(String.format("Error: %3.3f", newError));
+			if(newError > 200) {
+				//System.out.println(String.format("Sharp corner, %3.3f", newError));
+				move.setMotorRotation(150, 0);
+			} else if(newError < -200) {
+				//System.out.println(String.format("Sharp -corner, %3.3f", newError));
+				move.setMotorRotation(-150, 0);
+			} else {
+				move.setMotorRotationZeroed(newError, 100f);
+			}
+			//measure loss and adjust for it
+			//if(calculateError()) {
+				//error = getBufferedError();
+				//move.setMotorRotationZeroed(scaleToRange(error), 150f);
+				//System.out.println(String.format("%f, %f", error, scaleToRange(error)));
+			//}
 			
 			//summ total loss
 			
 			//reset total loss if still on line
 
-			move.forward();
+			//move.forward();
 		}
 		
 	}
 	
-
+	float scaleToRange(float x) {
+		// original boundary is where the values are beforehand
+		float upperOriginalBound = 200;
+		float lowerOriginalBound = -200;
+		// range is where they should be later on
+		float lowerRange = -300;
+		float upperRange = 300;
+		float top = (upperRange - lowerRange) * (x - lowerOriginalBound);
+		float bottom = (upperOriginalBound - lowerOriginalBound);
+		return top / bottom + lowerRange;
+	}
+	
+	/**
+     * 0,021 0,037 0,014 => schwarz: 0,024
+     * 0,137 0,202 0,155 => weiß: 0,164
+     * 0,083 0,142 0,075 => 0,1
+     * 
+     * Errors:
+     * 4000 => 2000 => 400
+     * 330 => 162 => 31
+     * -260 => -112 => -19
+     */
+	
 	void refindLine() {
 		System.out.println("Refinding line");
+		while(true) {
+			//if button pressed => return 1
+			if(Button.ESCAPE.isDown()) return;
+			float value = sensor.getGreyScale();
+			if(value > 0.08) {
+				return;
+			}
+		}
+	}
+	
+	void ninety() {
+		System.out.println("Sharp corner");
+		move.setMotorRotation(150, 0);
 	}
 	
 	void avoidBox() {
@@ -111,6 +163,20 @@ public class LineFollowingV2 implements ILevelSolver {
 		move.moveByDistance(38);
 		move.turn(-65);
 		move.moveByDistance(20);
+	}
+	
+	private float calculateErrorDouble() {
+		float value = sensor.getGreyScale();
+		float error = (sensor.getBorderValue() - value) * ERROR_FACTOR;
+		
+		totalLoss++;
+		if(value > 0.08) {
+			//TODO reset total error
+			totalLoss = 0f;
+			//tTimeout.resetCounter();
+		}
+		
+		return error;
 	}
 	
 	/**
@@ -126,9 +192,10 @@ public class LineFollowingV2 implements ILevelSolver {
 		int rest = iteration % GENERATIONS;
 		buffer[rest] = error;
 		
+		totalLoss++;
 		if(value > 0.08) {
 			//TODO reset total error
-			
+			totalLoss = 0f;
 			//tTimeout.resetCounter();
 		}
 		iteration++;
