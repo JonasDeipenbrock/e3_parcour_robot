@@ -20,11 +20,11 @@ public class LinesPassedCondition implements IDrivingCondition {
         if(!onLine && currentOnLine) {
             //reached line
             onLine = currentOnLine;
-        } else if (onLine && ! currentOnLine) {
+        } else if (onLine && !currentOnLine) {
             //passed line
             onLine = currentOnLine;
             lineCounter++;
         }
-        return numberOfLines >= lineCounter ? 1 : 0;
+        return lineCounter >= numberOfLines ? 1 : 0;
     }
 }

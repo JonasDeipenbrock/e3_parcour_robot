@@ -14,6 +14,18 @@ import wrappers.UltrasonicSensor;
 public class Base {
 
 	public static void main(String[] args) {
+		// Initialize all sensors
+		try  {
+			ColorSensor.getInstance();
+			UltrasonicSensor.getInstance();
+			BumperSensor.getInstance();
+			Movement.getInstance();
+			UltrasonicPosition.getInstance();
+		} catch (Exception e) {
+			// sometimes Lejos just fails. Try again
+			main(args);
+			return;
+		}
 		runLoop();
 		endProgram();
 	}
