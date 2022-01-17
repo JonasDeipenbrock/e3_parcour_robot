@@ -70,9 +70,16 @@ Implemented Zic-Zac find Crosses
 Further fine tuned find and push
 Added bumper to roboter
 
-# 20.12.2013
+# 20.12.2021
 
 Implemented auto correcting foreward method
 Implemented condition system instead of check loops
 Added new Bridge Crosssing algorithm
 Added circumnavigate box in line following
+
+# 10.01.2022
+
+Trouble with robot and lejos => couldnt compile, wlan not working, brick not starting
+Bridge Crossing => different exits depending if we bump the walls or perfectly hit the exit
+Exit codes => codes for subroutines to easily share the exit condition
+Line following => reimplemented with better setup for easier subroutine switching
