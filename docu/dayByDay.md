@@ -83,3 +83,10 @@ Trouble with robot and lejos => couldnt compile, wlan not working, brick not sta
 Bridge Crossing => different exits depending if we bump the walls or perfectly hit the exit
 Exit codes => codes for subroutines to easily share the exit condition
 Line following => reimplemented with better setup for easier subroutine switching
+
+# 17.01.2022
+Rewrote FindAndPush with Conditions
+More technical issues with the bricks
+Increased Speed on Bridge Crossing
+Improved End detection of Bridge Crossing
+Improved Line Following
