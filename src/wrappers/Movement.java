@@ -1,5 +1,6 @@
 package wrappers;
 
+import drivingConditions.ButtonCondition;
 import drivingConditions.IDrivingCondition;
 import e3base.Configuration;
 import lejos.hardware.Button;
@@ -149,7 +150,7 @@ public class Movement {
 		}
 	}
 
-	public void forwardUntil(IDrivingCondition condition) {
+	public int forwardUntil(IDrivingCondition condition) {
 		float scaleFactor = 5f;
 		//get tacho count
 		int[] tacho = getTachoCount();
@@ -159,7 +160,10 @@ public class Movement {
 		rightMotor.setSpeed(startSpeed);
 		forward();
 		boolean conditionMet = false;
-		while(!conditionMet && Button.ENTER.isUp()) {
+		while(!conditionMet) {
+			if (Button.ESCAPE.isDown()) {
+				return 99;
+			}
 			try {
 				conditionMet = condition.call() != 0;
 			} catch (Exception e) {
@@ -176,14 +180,18 @@ public class Movement {
 			leftMotor.endSynchronization();
 			forward();
 		}
-		stopCorrected();
+		stop();
 		leftMotor.setSpeed(startSpeed);
 		rightMotor.setSpeed(startSpeed);
+		return 0;
 	}
 
 	public int waitUntil(IDrivingCondition condition) {
 		int statusCode = 0;
-		while(statusCode == 0 && Button.ENTER.isUp()) {
+		while(statusCode == 0) {
+			if (Button.ESCAPE.isDown()) {
+				return 99;
+			}
 			try {
 				statusCode = condition.call();
 			} catch (Exception e) {
@@ -215,7 +223,7 @@ public class Movement {
 		leftMotor.stop(false);
 		rightMotor.stop(false);
 		leftMotor.endSynchronization();
-		while((leftMotor.isMoving() || rightMotor.isMoving()) && Button.ENTER.isUp()) {
+		while((leftMotor.isMoving() || rightMotor.isMoving()) && Button.ESCAPE.isUp()) {
 			
 		}
 		int[] endTacho = getTachoCount();

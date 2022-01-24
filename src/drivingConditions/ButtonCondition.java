@@ -6,6 +6,6 @@ public class ButtonCondition implements IDrivingCondition {
 
     @Override
     public Integer call() throws Exception {
-        return Button.ENTER.isDown() ? 1 : 0;
+        return Button.ESCAPE.isDown() ? 1 : 0;
     }
 }

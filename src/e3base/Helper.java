@@ -27,7 +27,7 @@ public class Helper {
 	 * @return
 	 */
 	public boolean checkLoop(boolean bumperCheck, boolean blueMode) {
-		if(Button.ENTER.isDown()) {
+		if(Button.ESCAPE.isDown()) {
 			System.out.println("Button Notaus");
 			return false;
 		};

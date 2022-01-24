@@ -32,14 +32,12 @@ public class BridgeCrossing implements ILevelSolver {
 		IDrivingCondition forwardCond = new OrCondition(
 				new UltrasonicCondition(ComparisonMethod.GREATER, 0.07f),
 				new BlueStripCondition(10),
-				new BumperCondition(),
-				new ButtonCondition());
+				new BumperCondition());
 
 		IDrivingCondition turnCond = new OrCondition(
 				new UltrasonicCondition(ComparisonMethod.LESS, 0.06f),
 				new BlueStripCondition(10),
-				new BumperCondition(),
-				new ButtonCondition());
+				new BumperCondition());
 
 		movement.moveByDistance(25);
 		while (true) {
@@ -56,7 +54,7 @@ public class BridgeCrossing implements ILevelSolver {
 				System.out.println("Bumper pushed. Starting correction code");
 				bumperNavigate();
 				return ExitCode.SUCCESSFULL;
-			} else if (status == 4) {
+			} else if (status == 99) {
 				System.out.println("Button pushed. Exiting");
 				return ExitCode.USER_INTERRUPT;
 			}
@@ -82,7 +80,7 @@ public class BridgeCrossing implements ILevelSolver {
 				audio.systemSound(1);
 				bumperNavigate();
 				return ExitCode.SUCCESSFULL;
-			} else if (status == 4) {
+			} else if (status == 99) {
 				System.out.println("Button pushed. Exiting");
 				return ExitCode.USER_INTERRUPT;
 			}
@@ -96,12 +94,11 @@ public class BridgeCrossing implements ILevelSolver {
 		movement.turn(30);
 		movement.forward();
 		int status = movement.waitUntil(new OrCondition(new BlueStripCondition(10),
-				                           new ButtonCondition(),
 				                           new TimeoutCondition(1000),
 				                           new BumperCondition()));
 		movement.stop();
 		// second time bumper hit
-		if (status == 4) {
+		if (status == 3) {
 			movement.moveByDistance(-5);
 			movement.turn(-25);
 			movement.moveByDistance(6);
