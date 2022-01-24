@@ -79,7 +79,7 @@ public class FindCrosses implements ILevelSolver {
 			}
 			
 		}
-		movement.stopCorrected();
+		movement.stop();
 		audio.systemSound(2);
 	}
 	

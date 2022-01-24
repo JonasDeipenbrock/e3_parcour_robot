@@ -1,6 +1,7 @@
 package levelSolver;
 
 import lejos.hardware.Button;
+import lejos.hardware.Sound;
 import lejos.utility.Delay;
 import wrappers.BumperSensor;
 import wrappers.ColorSensor;
@@ -48,6 +49,7 @@ public class LineFollowingV2 implements ILevelSolver {
 				case SUCCESSFULL:
 					System.out.println("Finished line following");
 					move.stop();
+					Sound.beep();
 					return ExitCode.SUCCESSFULL;
 				case LINE_LOSS_INTERRUPT:
 					refindLine();

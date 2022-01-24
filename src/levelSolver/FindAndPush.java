@@ -9,6 +9,7 @@ import drivingConditions.LinesPassedCondition;
 import drivingConditions.OrCondition;
 import drivingConditions.TimeoutCondition;
 import drivingConditions.UltrasonicCondition;
+import lejos.hardware.Sound;
 import wrappers.ExitCode;
 import wrappers.LEDPattern;
 import wrappers.Movement;
@@ -24,6 +25,8 @@ public class FindAndPush implements ILevelSolver {
 		UltrasonicPosition uPosition = UltrasonicPosition.getInstance();
 
 		uPosition.moveUP();
+		movement.setToMaxAcc();
+		movement.setToMaxSpeed();
 
 		ind.setLED(LEDPattern.LED_RED);
 		movement.moveByDistance(20);
@@ -31,9 +34,8 @@ public class FindAndPush implements ILevelSolver {
 		movement.forwardUntil(new OrCondition(new BumperCondition(),
 				                              new ButtonCondition()));
 		movement.moveByDistance(2);
-		movement.moveByDistance(-7);
+		movement.moveByDistance(-6);
 		movement.turnRight90();
-		movement.setToMaxSpeed();
 		movement.forwardUntil(new UltrasonicCondition(ComparisonMethod.GREATER, 0.6f));
 		ind.setLED(LEDPattern.LED_ORANGE);
 
@@ -76,8 +78,8 @@ public class FindAndPush implements ILevelSolver {
 		// Drive to exit
 		movement.moveByDistance(-10);
 		movement.turnLeft90();
-		movement.moveByDistance(-12);
-		movement.moveByDistance(4);
+		movement.moveByDistance(-11);
+		movement.moveByDistance(5);
 		movement.turnLeft90();
 
 
@@ -95,6 +97,7 @@ public class FindAndPush implements ILevelSolver {
 		movement.forwardUntil(new OrCondition(new BlueStripCondition(),
 				                              new TimeoutCondition(1000)));
 
+		Sound.beep();
 		return ExitCode.SUCCESSFULL;
 	}
 }
