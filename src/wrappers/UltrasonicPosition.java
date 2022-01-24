@@ -11,6 +11,11 @@ public class UltrasonicPosition {
 
     private UltrasonicPosition() {
         ultrasonicMotor = new EV3MediumRegulatedMotor(Configuration.ultrasonicMotorPort);
+        // rotate until is down
+        ultrasonicMotor.forward();
+        ultrasonicMotor.setStallThreshold(1, 50);
+        while (!ultrasonicMotor.isStalled()) {};
+        ultrasonicMotor.stop();
     }
     
     public static UltrasonicPosition getInstance() {
