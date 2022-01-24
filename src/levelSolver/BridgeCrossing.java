@@ -1,19 +1,21 @@
 package levelSolver;
 
 import drivingConditions.*;
-import lejos.hardware.Button;
 import wrappers.ExitCode;
 import wrappers.Movement;
+import wrappers.UltrasonicPosition;
 import wrappers.UltrasonicSensor;
 
 public class BridgeCrossing implements ILevelSolver {
 	
 	private Movement movement;
 	private UltrasonicSensor usSensor;
+	private UltrasonicPosition uPosition;
 	
 	public BridgeCrossing() {
 		movement = Movement.getInstance();
 		usSensor = UltrasonicSensor.getInstance();
+		uPosition = UltrasonicPosition.getInstance();
 	}
 
 	@Override
@@ -21,6 +23,7 @@ public class BridgeCrossing implements ILevelSolver {
 		System.out.println("Starting bridge crossing");
 		movement.setToMaxAcc();
 		movement.setToMaxSpeed();
+		uPosition.moveDown();
 
 		IDrivingCondition forwardCond = new OrCondition(
 				new UltrasonicCondition(ComparisonMethod.GREATER, 0.07f),
