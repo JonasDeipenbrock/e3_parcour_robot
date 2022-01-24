@@ -9,7 +9,8 @@ import drivingConditions.LinesPassedCondition;
 import drivingConditions.OrCondition;
 import drivingConditions.TimeoutCondition;
 import drivingConditions.UltrasonicCondition;
-import lejos.hardware.Sound;
+import lejos.hardware.Audio;
+import lejos.hardware.ev3.LocalEV3;
 import wrappers.ExitCode;
 import wrappers.LEDPattern;
 import wrappers.Movement;
@@ -18,11 +19,15 @@ import wrappers.UltrasonicPosition;
 
 public class FindAndPush implements ILevelSolver {
 
+	Audio audio;
+
 	@Override
 	public ExitCode run() {
 		Movement movement = Movement.getInstance();
 		StatusIndicator ind = StatusIndicator.getInstance();
 		UltrasonicPosition uPosition = UltrasonicPosition.getInstance();
+		audio = LocalEV3.get().getAudio();
+		
 
 		uPosition.moveUP();
 		movement.setToMaxAcc();
@@ -97,7 +102,7 @@ public class FindAndPush implements ILevelSolver {
 		movement.forwardUntil(new OrCondition(new BlueStripCondition(),
 				                              new TimeoutCondition(1000)));
 
-		Sound.beep();
+		audio.systemSound(1);
 		return ExitCode.SUCCESSFULL;
 	}
 }

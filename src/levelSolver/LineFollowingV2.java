@@ -1,7 +1,8 @@
 package levelSolver;
 
+import lejos.hardware.Audio;
 import lejos.hardware.Button;
-import lejos.hardware.Sound;
+import lejos.hardware.ev3.LocalEV3;
 import lejos.utility.Delay;
 import wrappers.BumperSensor;
 import wrappers.ColorSensor;
@@ -16,6 +17,7 @@ public class LineFollowingV2 implements ILevelSolver {
 	Movement move;
 	BumperSensor bumper;
 	ColorSensor sensor;
+	Audio audio;
 	
 	//total loss
 	float totalLoss = 0f;
@@ -30,6 +32,7 @@ public class LineFollowingV2 implements ILevelSolver {
 		move = Movement.getInstance();
 		bumper = BumperSensor.getInstance();
 		sensor = ColorSensor.getInstance();
+		audio = LocalEV3.get().getAudio();
 		
 		//initialize fields
 		
@@ -49,7 +52,7 @@ public class LineFollowingV2 implements ILevelSolver {
 				case SUCCESSFULL:
 					System.out.println("Finished line following");
 					move.stop();
-					Sound.beep();
+					audio.systemSound(1);
 					return ExitCode.SUCCESSFULL;
 				case LINE_LOSS_INTERRUPT:
 					refindLine();

@@ -1,7 +1,8 @@
 package levelSolver;
 
 import drivingConditions.*;
-import lejos.hardware.Sound;
+import lejos.hardware.Audio;
+import lejos.hardware.ev3.LocalEV3;
 import wrappers.ExitCode;
 import wrappers.Movement;
 import wrappers.UltrasonicPosition;
@@ -12,11 +13,13 @@ public class BridgeCrossing implements ILevelSolver {
 	private Movement movement;
 	private UltrasonicSensor usSensor;
 	private UltrasonicPosition uPosition;
+	Audio audio;
 	
 	public BridgeCrossing() {
 		movement = Movement.getInstance();
 		usSensor = UltrasonicSensor.getInstance();
 		uPosition = UltrasonicPosition.getInstance();
+		audio = LocalEV3.get().getAudio();
 	}
 
 	@Override
@@ -72,11 +75,11 @@ public class BridgeCrossing implements ILevelSolver {
 			movement.stop();
 			if (status == 2) {
 				System.out.println("Detected Blue Strip");
-				Sound.beep();
+				audio.systemSound(1);
 				return ExitCode.SUCCESSFULL;
 			} else if (status == 3) {
 				System.out.println("Bumper pushed. Starting correction code");
-				Sound.beep();
+				audio.systemSound(1);
 				bumperNavigate();
 				return ExitCode.SUCCESSFULL;
 			} else if (status == 4) {
