@@ -13,13 +13,14 @@ import wrappers.UltrasonicSensor;
 
 public class Base {
 
+	private static Movement movement;
 	public static void main(String[] args) {
 		// Initialize all sensors
 		try  {
 			ColorSensor.getInstance();
 			UltrasonicSensor.getInstance();
 			BumperSensor.getInstance();
-			Movement.getInstance();
+			movement = Movement.getInstance();
 			UltrasonicPosition.getInstance();
 		} catch (Exception e) {
 			// sometimes Lejos just fails. Try again
@@ -46,8 +47,9 @@ public class Base {
 			try {
 				ILevelSolver executingAlgo = value.getLevelSolver().newInstance();
 				executingAlgo.run();
+				movement.stop();
 				System.out.println("Finished part");
-				Delay.msDelay(10000);
+				Delay.msDelay(5000);
 			} catch (InstantiationException | IllegalAccessException e) {
 				e.printStackTrace();
 				System.exit(1);
