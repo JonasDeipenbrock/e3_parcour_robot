@@ -10,7 +10,9 @@ public enum Algorithms {
 	FINDANDPUSH("Find and Push", FindAndPush.class),
 	BRIDGECROSSING("Bridge Crossing", BridgeCrossing.class),
 	FINDCROSSES("Find Crosses", FindCrosses.class),
-	CALIBRATION("Calibration", Calibration.class);
+	CALIBRATION("Calibration", Calibration.class),
+	FROMFAP("FromFAP", FromFAP.class),
+	FROMBRIDGE("FromBridge", FromBridge.class);
 
 	private final Class<ILevelSolver> levelSolver;
 	private final String name;
