@@ -17,7 +17,7 @@ public class TachoCondition implements IDrivingCondition {
     @Override
     public Integer call() throws Exception {
         int[] currentVal = move.getTachoCount();
-        int tachoDiff = Math.abs((initial[0] - currentVal[0]) - (initial[1] - currentVal[2]));
+        int tachoDiff = Math.abs((initial[0] - currentVal[0]) - (initial[1] - currentVal[1]));
         return tachoDiff >= tachoDifference ? 1 : 0;
     }
 }
