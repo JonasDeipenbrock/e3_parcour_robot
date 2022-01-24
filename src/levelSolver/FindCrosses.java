@@ -17,8 +17,20 @@ public class FindCrosses implements ILevelSolver {
 	ColorSensor color;
 	Audio audio;
 
-	boolean whiteMissing = true;
-	boolean redMissing = true;
+	boolean whiteFound = false;
+	boolean redFound = false;
+	
+	int samplesRequired;
+	int whiteSeen = 0;
+	int redSeen = 0;
+	
+	public FindCrosses(int samplesRequired) {
+		this.samplesRequired = samplesRequired;
+	}
+	
+	public FindCrosses() {
+		this(5);
+	}
 	
 	@Override
 	public ExitCode run() {
@@ -49,54 +61,56 @@ public class FindCrosses implements ILevelSolver {
 	//  6 = black
 	//  7 = white
 	
-	void yollo() {
-		Random rand = new Random();
-		movement.moveByDistance(15);
-		while(helper.checkLoop(false, false) && (whiteMissing || redMissing)) {
-			movement.stopCorrected();
-			movement.moveByDistance(-5);
-			int newAngle = rand.nextInt(90) + 45;
-			movement.turn(newAngle);
-			movement.forward();
-			while(helper.checkLoop(true, false)) {
-				int colorId = color.getColor();
-				if(colorId == Color.WHITE) {
-					whiteMissing = false;
-				}
-				if(colorId == Color.RED) {
-					redMissing = false;
-				}
-				if(colorId == Color.BLUE) {
-					//handle blue line case aka drive back a bit and turn some weird angle
-					System.out.println(colorId);
-				}
-				if(!whiteMissing || !redMissing) {
-					System.out.println("one found");
-				}
-				if (!(whiteMissing || redMissing)) {
-					System.out.println("both");
-				}
-			}
-			
-		}
-		movement.stop();
-		audio.systemSound(2);
-	}
+//	void yollo() {
+//		Random rand = new Random();
+//		movement.moveByDistance(15);
+//		while(helper.checkLoop(false, false) && (whiteMissing || redMissing)) {
+//			movement.stopCorrected();
+//			movement.moveByDistance(-5);
+//			int newAngle = rand.nextInt(90) + 45;
+//			movement.turn(newAngle);
+//			movement.forward();
+//			while(helper.checkLoop(true, false)) {
+//				int colorId = color.getColor();
+//				if(colorId == Color.WHITE) {
+//					whiteMissing = false;
+//				}
+//				if(colorId == Color.RED) {
+//					redMissing = false;
+//				}
+//				if(colorId == Color.BLUE) {
+//					//handle blue line case aka drive back a bit and turn some weird angle
+//					System.out.println(colorId);
+//				}
+//				if(!whiteMissing || !redMissing) {
+//					System.out.println("one found");
+//				}
+//				if (!(whiteMissing || redMissing)) {
+//					System.out.println("both");
+//				}
+//			}
+//			
+//		}
+//		movement.stop();
+//		audio.systemSound(2);
+//	}
 	
 	/**
 	 * Trys to find the crosses using a cross pattern
 	 */
 	void normalClearing() {
 		//initial drive to corner
+		movement.moveByDistance(10);
+		movement.forward();
 		while(helper.checkLoop(true, false)) {
-			movement.forward();
 			if(checkColorCondition()) {
 				return;
 			}
 		}
 		movement.stopCorrected();
-		movement.moveByDistance(-5);
+		movement.moveByDistance(-10);
 		movement.turnLeft90();
+		movement.moveByDistance(-5);
 		while(true) {
 			if(passOnceLeft()) {
 				return;
@@ -118,20 +132,12 @@ public class FindCrosses implements ILevelSolver {
 				return true;
 			}
 		}
-		movement.stopCorrected();
-		movement.moveByDistance(-5);
-		if(checkColorCondition()) {
-			return true;
-		}
-		movement.turnLeft90();
-		if(checkColorCondition()) {
-			return true;
-		}
 		movement.moveByDistance(5);
-		if(checkColorCondition()) {
-			return true;
-		}
+		movement.moveByDistance(-5);
 		movement.turnLeft90();
+		movement.moveByDistance(5);
+		movement.turnLeft90();
+		movement.moveByDistance(-8);
 		return false;
 	}
 	
@@ -146,20 +152,12 @@ public class FindCrosses implements ILevelSolver {
 				return true;
 			}
 		}
-		movement.stopCorrected();
-		movement.moveByDistance(-5);
-		if(checkColorCondition()) {
-			return true;
-		}
-		movement.turnRight90();
-		if(checkColorCondition()) {
-			return true;
-		}
 		movement.moveByDistance(5);
-		if(checkColorCondition()) {
-			return true;
-		}
+		movement.moveByDistance(-5);
 		movement.turnRight90();
+		movement.moveByDistance(5);
+		movement.turnRight90();
+		movement.moveByDistance(-8);
 		return false;
 	}
 	
@@ -168,26 +166,38 @@ public class FindCrosses implements ILevelSolver {
 	 */
 	boolean checkColorCondition() {
 		int colorId = color.getColor();
-		System.out.println(colorId);
+		
+		//increment the found color
 		if(colorId == Color.WHITE) {
-			whiteMissing = false;
-			audio.systemSound(1);
+			whiteSeen++;
+		} else if(colorId == Color.RED) {
+			redSeen++;
+		} else {
+			whiteSeen = 0;
+			redSeen = 0;
 		}
-		if(colorId == Color.RED) {
-			redMissing = false;
+		
+		//check if color was found multiple times
+		if(!whiteFound && whiteSeen >= samplesRequired) {
 			audio.systemSound(1);
+			whiteFound = true;
 		}
+		if(!redFound && redSeen >= samplesRequired) {
+			audio.systemSound(2);
+			redFound = true;
+		}
+		
 		if(colorId == Color.BLUE) {
 			//handle blue line case aka drive back a bit and turn some weird angle
 			System.out.println(colorId);
 		}
-		if(!whiteMissing || !redMissing) {
+		if(whiteFound || redFound) {
 			System.out.println("one found");
 		}
-		if (!(whiteMissing || redMissing)) {
+		if (whiteFound && redFound) {
 			System.out.println("both");
 		}
-		return !(whiteMissing || redMissing);
+		return whiteFound && redFound;
 	}
 
 	
