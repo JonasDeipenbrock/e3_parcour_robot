@@ -107,8 +107,9 @@ public class FindCrosses implements ILevelSolver {
 				return;
 			}
 		}
-		movement.stopCorrected();
-		movement.moveByDistance(-10);
+		//movement.stopCorrected();
+		movement.moveByDistance(10);
+		movement.moveByDistance(-8);
 		movement.turnLeft90();
 		movement.moveByDistance(-5);
 		while(true) {

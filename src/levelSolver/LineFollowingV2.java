@@ -1,5 +1,8 @@
 package levelSolver;
 
+import drivingConditions.OrCondition;
+import drivingConditions.TachoCondition;
+import drivingConditions.WhiteStripCondition;
 import lejos.hardware.Audio;
 import lejos.hardware.Button;
 import lejos.hardware.ev3.LocalEV3;
@@ -21,11 +24,14 @@ public class LineFollowingV2 implements ILevelSolver {
 	
 	//total loss
 	float totalLoss = 0f;
+//	
+//	//loss buffer values
+//	int iteration = 1;
+//	final int GENERATIONS = 50;
+//	float[] buffer = new float[GENERATIONS];
 	
-	//loss buffer values
-	int iteration = 1;
-	final int GENERATIONS = 50;
-	float[] buffer = new float[GENERATIONS];
+
+	int[] currentRotation = {0,0};
 	
 	@Override
 	public ExitCode run() {
@@ -55,6 +61,7 @@ public class LineFollowingV2 implements ILevelSolver {
 					audio.systemSound(1);
 					return ExitCode.SUCCESSFULL;
 				case LINE_LOSS_INTERRUPT:
+					move.stop();
 					refindLine();
 					break;
 				case BUMPER_INTERRUPT:
@@ -74,10 +81,9 @@ public class LineFollowingV2 implements ILevelSolver {
 	}
 	
 	ExitCode followLine() {
-		float error = 0f;
 		//! Error not in while but total error!
 		while(true) {
-			Delay.msDelay(100);
+			Delay.msDelay(50);
 			//if bumped => return 2
 			if(bumper.anyBumbed()) return ExitCode.BUMPER_INTERRUPT;
 			
@@ -89,19 +95,25 @@ public class LineFollowingV2 implements ILevelSolver {
 			if(Button.ESCAPE.isDown()) return ExitCode.USER_INTERRUPT;
 			
 			//if total loss too big => return 3
-			if(totalLoss > 100) {
+			System.out.println(String.format("Misses: %5.0f", totalLoss));
+			if(totalLoss > 20) {
+				System.out.println("Refinding Line pls");
+				totalLoss = 0;
+				return ExitCode.LINE_LOSS_INTERRUPT;
 				//System.out.println(String.format("Total error reached %f", totalLoss));
 			}
 			float newError = scaleToRange(calculateErrorDouble());
-			System.out.println(String.format("Error: %3.3f", newError));
 			if(newError > 200) {
 				//System.out.println(String.format("Sharp corner, %3.3f", newError));
-				move.setMotorRotation(150, 0);
+				System.out.println("left");
+				move.setMotorRotation(400, 0);
 			} else if(newError < -200) {
+				System.out.println("right");
 				//System.out.println(String.format("Sharp -corner, %3.3f", newError));
-				move.setMotorRotation(-150, 0);
+				move.setMotorRotation(-400, 0);
 			} else {
-				move.setMotorRotationZeroed(newError, 100f);
+				System.out.println("straight");
+				move.setMotorRotationZeroed(newError, 120f);
 			}
 			//measure loss and adjust for it
 			//if(calculateError()) {
@@ -144,14 +156,30 @@ public class LineFollowingV2 implements ILevelSolver {
 	
 	void refindLine() {
 		System.out.println("Refinding line");
-		while(true) {
-			//if button pressed => return 1
-			if(Button.ESCAPE.isDown()) return;
-			float value = sensor.getGreyScale();
-			if(value > 0.08) {
-				return;
-			}
+		int[] tachoStopped = move.getTachoCount();
+		int leftDiff = tachoStopped[0] - currentRotation[0];
+		System.out.println(String.format("%d", leftDiff));
+		
+		//overcorrect right side for a few degrees
+		move.setMotorRotation(400, 0);
+		int status = move.waitUntil(new OrCondition(new TachoCondition(100), new WhiteStripCondition(3)));
+		if(status == 2) {	//line found again
+			return;
 		}
+		return;
+		
+		//turn back to left side by turned diff and then turn more degree to left
+		
+		//if still nothing has been found => go back straight and search in front
+		
+		
+//		while(true) {
+//			//if button pressed => return 1
+//			if(Button.ESCAPE.isDown()) return;
+//			float value = sensor.getGreyScale();
+//			if(value > 0.08) {
+//			}
+//		}
 	}
 	
 	void ninety() {
@@ -174,46 +202,51 @@ public class LineFollowingV2 implements ILevelSolver {
 		float value = sensor.getGreyScale();
 		float error = (sensor.getBorderValue() - value) * ERROR_FACTOR;
 		
-		totalLoss++;
-		if(value > 0.08) {
-			//TODO reset total error
+		if(value <= 0.07 || value >= 0.11) {
+			totalLoss++;
+		} else {
+			currentRotation = move.getTachoCount();
 			totalLoss = 0f;
-			//tTimeout.resetCounter();
 		}
+//		if(value > 0.08 && value < 1.2) {
+//			//TODO reset total error
+//			totalLoss = 0f;
+//			//tTimeout.resetCounter();
+//		}
 		
 		return error;
 	}
 	
-	/**
-	 * Calculates the error and check if on new generation
-	 * @return
-	 */
-	private boolean calculateError() {
-		//get grey value and calculate error
-		float value = sensor.getGreyScale();
-		float error = (sensor.getBorderValue() - value) * ERROR_FACTOR;
-		//System.out.println(error);
-		//fill buffer
-		int rest = iteration % GENERATIONS;
-		buffer[rest] = error;
-		
-		totalLoss++;
-		if(value > 0.08) {
-			//TODO reset total error
-			totalLoss = 0f;
-			//tTimeout.resetCounter();
-		}
-		iteration++;
-		if(rest == 0) return true;
-		return false;
-	}
+//	/**
+//	 * Calculates the error and check if on new generation
+//	 * @return
+//	 */
+//	private boolean calculateError() {
+//		//get grey value and calculate error
+//		float value = sensor.getGreyScale();
+//		float error = (sensor.getBorderValue() - value) * ERROR_FACTOR;
+//		//System.out.println(error);
+//		//fill buffer
+//		int rest = iteration % GENERATIONS;
+//		buffer[rest] = error;
+//		
+//		totalLoss++;
+//		if(value > 0.08) {
+//			//TODO reset total error
+//			totalLoss = 0f;
+//			//tTimeout.resetCounter();
+//		}
+//		iteration++;
+//		if(rest == 0) return true;
+//		return false;
+//	}
 	
-	private float getBufferedError() {
-		float errorSum = 0;
-		for (float err: buffer) {
-			errorSum += err;
-		}
-		float medianError = errorSum / GENERATIONS;
-		return medianError;
-	}
+//	private float getBufferedError() {
+//		float errorSum = 0;
+//		for (float err: buffer) {
+//			errorSum += err;
+//		}
+//		float medianError = errorSum / GENERATIONS;
+//		return medianError;
+//	}
 }
