@@ -90,3 +90,8 @@ More technical issues with the bricks
 Increased Speed on Bridge Crossing
 Improved End detection of Bridge Crossing
 Improved Line Following
+
+# 24.01.2022
+Lots of small improvements
+Continued improving Line Following
+Ported Documentation to Ilias
