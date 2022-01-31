@@ -18,6 +18,6 @@ public class Configuration {
     public static final Port ultrasonicSensorPort = SensorPort.S4;
     
     // Car defaults
-	public static final double wheelDiameter = 3.15d;
-	public static final double trackWidth = 19.2d;
+	public static final double wheelDiameter = 3.2d; //3.15d
+	public static final double trackWidth = 21d; //19.2d
 }

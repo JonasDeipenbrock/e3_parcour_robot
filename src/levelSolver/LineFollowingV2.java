@@ -41,7 +41,7 @@ public class LineFollowingV2 implements ILevelSolver {
 		sensor = ColorSensor.getInstance();
 		audio = LocalEV3.get().getAudio();
 		
-		move.setAcceleration(600);
+		move.setAcceleration(4000);
 		//initialize fields
 		
 		
@@ -110,11 +110,11 @@ public class LineFollowingV2 implements ILevelSolver {
 			if(newError > 200) {
 				//System.out.println(String.format("Sharp corner, %3.3f", newError));
 				System.out.println("left");
-				move.setMotorRotation(400, 0);
+				move.setMotorRotation(300, 0);
 			} else if(newError < -200) {
 				System.out.println("right");
 				//System.out.println(String.format("Sharp -corner, %3.3f", newError));
-				move.setMotorRotation(-400, 0);
+				move.setMotorRotation(-300, 0);
 			} else {
 				System.out.println("straight");
 				move.setMotorRotationZeroed(newError, 120f);
@@ -159,7 +159,11 @@ public class LineFollowingV2 implements ILevelSolver {
      */
 	
 	void refindLine() {
-		System.out.println("Refinding line");
+		move.setToMaxAcc();
+		move.stop();
+		Delay.msDelay(5000);
+		return;
+		/*System.out.println("Refinding line");
 		int[] tachoStopped = move.getTachoCount();
 		int leftDiff = tachoStopped[0] - currentRotation[0];
 		System.out.println(String.format("%d", leftDiff));
@@ -170,7 +174,7 @@ public class LineFollowingV2 implements ILevelSolver {
 		if(status == 2) {	//line found again
 			return;
 		}
-		return;
+		return;*/
 		
 		//turn back to left side by turned diff and then turn more degree to left
 		
@@ -200,18 +204,20 @@ public class LineFollowingV2 implements ILevelSolver {
 		move.turnRight90();
 		move.moveByDistance(38);
 		move.turn(-65);
-		int status = move.forwardUntil(new OrCondition(new WhiteStripCondition(2), new BlueStripCondition(2)));
+		move.forwardUntil(new OrCondition(new WhiteStripCondition(2), new BlueStripCondition(2)));
+		Delay.msDelay(250);
 		move.turn(65);
-		if (status == 1) {
-			move.forwardUntil(new BlueStripCondition(2));
-		}
+		Delay.msDelay(250);
+		move.moveByDistance(-7);
+		move.forwardUntil(new BlueStripCondition(5));
+		
 	}
 	
 	private float calculateErrorDouble() {
 		float value = sensor.getGreyScale();
 		float error = (sensor.getBorderValue() - value) * ERROR_FACTOR;
 		
-		if(value <= 0.07 || value >= 0.11) {
+		if(value <= 0.07) {
 			totalLoss++;
 		} else {
 			currentRotation = move.getTachoCount();
