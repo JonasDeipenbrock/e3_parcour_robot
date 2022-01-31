@@ -5,12 +5,10 @@ import java.util.Arrays;
 
 public enum Algorithms {
 	FULLPARCOUR("Full Parcour", FullParcour.class),
-	LINEFOLLOWING("Line Following", LineFollowing.class),
 	LINEFOLLOWINGV2("Line Following v2", LineFollowingV2.class),
 	FINDANDPUSH("Find and Push", FindAndPush.class),
 	BRIDGECROSSING("Bridge Crossing", BridgeCrossing.class),
 	FINDCROSSES("Find Crosses", FindCrosses.class),
-	CALIBRATION("Calibration", Calibration.class),
 	FROMFAP("FromFAP", FromFAP.class),
 	FROMBRIDGE("FromBridge", FromBridge.class);
 
