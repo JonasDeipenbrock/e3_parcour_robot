@@ -3,6 +3,7 @@ package levelSolver;
 import drivingConditions.BlueStripCondition;
 import drivingConditions.OrCondition;
 import drivingConditions.TachoCondition;
+import drivingConditions.TimeoutCondition;
 import drivingConditions.WhiteStripCondition;
 import lejos.hardware.Audio;
 import lejos.hardware.Button;
@@ -17,6 +18,7 @@ public class LineFollowingV2 implements ILevelSolver {
 
 	boolean afterBoxFlag = false;
 	
+	int lineFollowingAcc = 4000;
 	final float ERROR_FACTOR = 2000;	//4000
 	Movement move;
 	BumperSensor bumper;
@@ -41,7 +43,7 @@ public class LineFollowingV2 implements ILevelSolver {
 		sensor = ColorSensor.getInstance();
 		audio = LocalEV3.get().getAudio();
 		
-		move.setAcceleration(4000);
+		move.setAcceleration(lineFollowingAcc);
 		//initialize fields
 		
 		
@@ -65,6 +67,7 @@ public class LineFollowingV2 implements ILevelSolver {
 				case LINE_LOSS_INTERRUPT:
 					move.stop();
 					refindLine();
+					move.setAcceleration(lineFollowingAcc);
 					break;
 				case BUMPER_INTERRUPT:
 					avoidBox();
@@ -161,8 +164,29 @@ public class LineFollowingV2 implements ILevelSolver {
 	void refindLine() {
 		move.setToMaxAcc();
 		move.stop();
-		Delay.msDelay(5000);
-		return;
+		
+		//turn right until line found or 15°
+		move.setMotorRotation(400, 0);
+		int status = move.waitUntil(new OrCondition(new TachoCondition(350), new WhiteStripCondition(3)));
+		move.stop();
+		if(status == 2) {	//line found again
+			return;
+		}
+		//turn left until line found or -220°
+		move.setMotorRotation(-400, 0);
+		status = move.waitUntil(new OrCondition(new TachoCondition(2700), new WhiteStripCondition(3)));
+		move.stop();
+		if(status == 2) {	//line found again
+			return;
+		}
+		//turn back to starting position
+		move.setMotorRotation(400, 0);
+		move.waitUntil(new TachoCondition(1300));
+		move.stop();
+		//forward until white
+		move.setToMaxSpeed();
+		move.forwardUntil(new OrCondition(new WhiteStripCondition(3), new TimeoutCondition(2000)));
+		
 		/*System.out.println("Refinding line");
 		int[] tachoStopped = move.getTachoCount();
 		int leftDiff = tachoStopped[0] - currentRotation[0];
