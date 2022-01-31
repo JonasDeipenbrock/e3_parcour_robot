@@ -173,7 +173,7 @@ public class LineFollowingV2 implements ILevelSolver {
 			return;
 		}
 		Delay.msDelay(100);
-		move.moveByDistance(-4);
+		move.moveByDistance(-5);
 		Delay.msDelay(100);
 		//turn left until line found or -220°
 		move.setMotorRotation(-400, 0);
