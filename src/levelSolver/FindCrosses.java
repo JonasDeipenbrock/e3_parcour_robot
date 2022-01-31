@@ -181,22 +181,18 @@ public class FindCrosses implements ILevelSolver {
 		//check if color was found multiple times
 		if(!whiteFound && whiteSeen >= samplesRequired) {
 			audio.systemSound(1);
+			System.out.println("Found White");
 			whiteFound = true;
 		}
 		if(!redFound && redSeen >= samplesRequired) {
 			audio.systemSound(2);
+			System.out.println("Found Red");
 			redFound = true;
 		}
 		
 		if(colorId == Color.BLUE) {
 			//handle blue line case aka drive back a bit and turn some weird angle
 			System.out.println(colorId);
-		}
-		if(whiteFound || redFound) {
-			System.out.println("one found");
-		}
-		if (whiteFound && redFound) {
-			System.out.println("both");
 		}
 		return whiteFound && redFound;
 	}

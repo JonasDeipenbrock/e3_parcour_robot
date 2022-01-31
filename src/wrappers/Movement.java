@@ -23,7 +23,7 @@ public class Movement {
 		leftMotor.synchronizeWith(new EV3LargeRegulatedMotor[] {rightMotor});
 		dPilot = new DifferentialPilot(Configuration.wheelDiameter,
 				Configuration.trackWidth, leftMotor, rightMotor, true);
-		setAcceleration(500);
+		setToMaxAcc();
 		setToMaxSpeed();
 	}
 

@@ -1,5 +1,6 @@
 package levelSolver;
 
+import drivingConditions.BlueStripCondition;
 import drivingConditions.OrCondition;
 import drivingConditions.TachoCondition;
 import drivingConditions.WhiteStripCondition;
@@ -40,6 +41,7 @@ public class LineFollowingV2 implements ILevelSolver {
 		sensor = ColorSensor.getInstance();
 		audio = LocalEV3.get().getAudio();
 		
+		move.setAcceleration(600);
 		//initialize fields
 		
 		
@@ -67,7 +69,9 @@ public class LineFollowingV2 implements ILevelSolver {
 				case BUMPER_INTERRUPT:
 					avoidBox();
 					afterBoxFlag = true;
-					break;
+					//TODO: instead of hardcoding box position use flag
+					audio.systemSound(1);
+					return ExitCode.SUCCESSFULL;
 				case USER_INTERRUPT:
 					System.out.println("User interrupt");
 					move.stop();
@@ -188,6 +192,7 @@ public class LineFollowingV2 implements ILevelSolver {
 	}
 	
 	void avoidBox() {
+		move.setToMaxAcc();
 		System.out.println("Avoiding box");
 		move.moveByDistance(-7);
 		move.turnLeft90();
@@ -195,7 +200,11 @@ public class LineFollowingV2 implements ILevelSolver {
 		move.turnRight90();
 		move.moveByDistance(38);
 		move.turn(-65);
-		move.moveByDistance(20);
+		int status = move.forwardUntil(new OrCondition(new WhiteStripCondition(2), new BlueStripCondition(2)));
+		move.turn(65);
+		if (status == 1) {
+			move.forwardUntil(new BlueStripCondition(2));
+		}
 	}
 	
 	private float calculateErrorDouble() {
