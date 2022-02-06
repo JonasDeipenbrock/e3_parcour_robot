@@ -172,9 +172,7 @@ public class LineFollowingV2 implements ILevelSolver {
 		if(status == 2) {	//line found again
 			return;
 		}
-		Delay.msDelay(100);
-		move.moveByDistance(-5);
-		Delay.msDelay(100);
+		move.moveByDistance(-4);
 		//turn left until line found or -220°
 		move.setMotorRotation(-400, 0);
 		status = move.waitUntil(new OrCondition(new TachoCondition(2700), new WhiteStripCondition(3)));
@@ -189,10 +187,9 @@ public class LineFollowingV2 implements ILevelSolver {
 		move.setMotorRotation(400, 0);
 		move.waitUntil(new TachoCondition(1200));
 		move.stop();
-		Delay.msDelay(100);
 		//forward until white
 		move.setToMaxSpeed();
-		move.setMotorRotation(-90f, 600f);
+		move.setMotorRotation(-100f, 500f);
 		move.waitUntil(new OrCondition(new WhiteStripCondition(3), new TimeoutCondition(1200)));
 		move.stop();
 		
