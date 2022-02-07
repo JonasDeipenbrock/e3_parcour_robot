@@ -4,7 +4,9 @@ import drivingConditions.*;
 import lejos.hardware.Audio;
 import lejos.hardware.ev3.LocalEV3;
 import wrappers.ExitCode;
+import wrappers.LEDPattern;
 import wrappers.Movement;
+import wrappers.StatusIndicator;
 import wrappers.UltrasonicPosition;
 import wrappers.UltrasonicSensor;
 
@@ -49,10 +51,14 @@ public class BridgeCrossing implements ILevelSolver {
 
 			if (status == 2) {
 				System.out.println("Detected Blue Strip");
+				audio.systemSound(1);
 				return ExitCode.SUCCESSFULL;
 			} else if (status == 3) {
 				System.out.println("Bumper pushed. Starting correction code");
+				StatusIndicator.getInstance().setLED(LEDPattern.LED_RED);
 				bumperNavigate();
+				StatusIndicator.getInstance().setLED(LEDPattern.LED_BLACK);
+				audio.systemSound(1);
 				return ExitCode.SUCCESSFULL;
 			} else if (status == 99) {
 				System.out.println("Button pushed. Exiting");
@@ -77,8 +83,10 @@ public class BridgeCrossing implements ILevelSolver {
 				return ExitCode.SUCCESSFULL;
 			} else if (status == 3) {
 				System.out.println("Bumper pushed. Starting correction code");
-				audio.systemSound(1);
+				StatusIndicator.getInstance().setLED(LEDPattern.LED_RED);
 				bumperNavigate();
+				StatusIndicator.getInstance().setLED(LEDPattern.LED_BLACK);
+				audio.systemSound(1);
 				return ExitCode.SUCCESSFULL;
 			} else if (status == 99) {
 				System.out.println("Button pushed. Exiting");
@@ -99,6 +107,7 @@ public class BridgeCrossing implements ILevelSolver {
 		movement.stop();
 		// second time bumper hit
 		if (status == 3) {
+			StatusIndicator.getInstance().setLED(LEDPattern.LED_ORANGE); 
 			movement.moveByDistance(-5);
 			movement.turn(-25);
 			movement.moveByDistance(6);
